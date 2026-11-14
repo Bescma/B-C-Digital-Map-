@@ -190,65 +190,154 @@ document.getElementById('callFleet').addEventListener('click',()=>{
   }
   ship.style.left=baseX+'%';
   ship.style.top=baseY+'%';
+
+document.getElementById('fleetToken').style.display='none';
+
+document.getElementById('callNextShip').addEventListener('click',()=>{
+ shipsCalled++;
+
+ const ship=document.createElement('div');
+ ship.className='extra-ship';
+ ship.textContent='🚢';
+ ship.setAttribute('aria-label','Ship '+shipsCalled);
+ ship.title='Ship '+shipsCalled+' — tap to select';
+ ship.dataset.shipId=String(shipsCalled);
+ ship.style.left='50%';
+ ship.style.top='76%';
+
+ ship.addEventListener('click',(event)=>{
+  event.stopPropagation();
+  document.querySelectorAll('.extra-ship').forEach(item=>item.classList.remove('selected'));
+  ship.classList.add('selected');
+  selectedShip=ship;
+
+  document.getElementById('name').textContent='Ship '+ship.dataset.shipId;
+  document.getElementById('desc').textContent='Selected ship. Choose a destination and press Send Fleet.';
+  document.getElementById('fleetStatus').textContent='Ship '+ship.dataset.shipId+' selected. Choose a destination.';
  });
- document.getElementById('sendFleet').disabled=true;
- window.setTimeout(()=>{
-  activeShips.forEach(ship=>ship.remove());
-  activeShips.length=0;
-  mainToken.style.display='none';
-  arrow.style.display='none';
-  if(selectedShip && !selectedShip.isConnected) selectedShip=null;
-  document.querySelectorAll('.extra-ship').forEach(ship=>ship.classList.remove('selected'));
-  status.textContent='All ships returned to base and removed from the map.';
-  document.getElementById('sendFleet').disabled=false;
- },1850);
+
+ world.appendChild(ship);
+ activeShips.push(ship);
+
+ document.getElementById('fleetStatus').textContent='Ship '+shipsCalled+' called to base. Select it and choose a destination.';
 });
+
 document.getElementById('sendFleet').addEventListener('click',()=>{
  const send=document.getElementById('sendFleet');
+ const token=selectedShip;
+
  if(send.disabled) return;
- const token=selectedShip || document.getElementById('fleetToken');
- if(token===document.getElementById('fleetToken') && token.style.display==='none'){
-  document.getElementById('fleetStatus').textContent='Select a visible ship or call a new ship first.';
+
+ if(!token || !token.isConnected){
+  document.getElementById('fleetStatus').textContent='Call and select a ship first.';
   return;
  }
+
+ if(send.dataset.x===undefined || send.dataset.y===undefined){
+  document.getElementById('fleetStatus').textContent='Choose a destination on the map first.';
+  return;
+ }
+
  const arrow=document.getElementById('fleetArrow');
  const startX=parseFloat(token.style.left)||50;
  const startY=parseFloat(token.style.top)||76;
  const endX=parseFloat(send.dataset.x);
  const endY=parseFloat(send.dataset.y);
+
  const dx=(endX-startX)*world.clientWidth/100;
  const dy=(endY-startY)*world.clientHeight/100;
  const length=Math.sqrt(dx*dx+dy*dy);
  const angle=Math.atan2(dy,dx)*180/Math.PI;
+
  arrow.style.left=startX+'%';
  arrow.style.top=startY+'%';
  arrow.style.setProperty('--arrow-length',Math.max(0,length-20)+'px');
  arrow.style.transform='rotate('+angle+'deg)';
  arrow.style.display=length>24?'block':'none';
+
  token.style.left=endX+'%';
  token.style.top=endY+'%';
- const movingName=selectedShip ? 'Ship '+selectedShip.dataset.shipId : 'Fleet';
- document.getElementById('fleetStatus').textContent=movingName+' moving to '+send.dataset.destination+'…';
+
+ const movingName='Ship '+token.dataset.shipId;
+ document.getElementById('fleetStatus').textContent=movingName+' moving to '+(send.dataset.destination||'selected location')+'…';
+
  send.disabled=true;
+
  window.setTimeout(()=>{
-  document.getElementById('fleetStatus').textContent=movingName+' arrived at '+send.dataset.destination+'.';
+  document.getElementById('fleetStatus').textContent=movingName+' arrived.';
   arrow.style.display='none';
   send.disabled=false;
  },1850);
 });
-function applyZoom(){world.style.transform=`scale(${zoom})`;}
-document.getElementById('plus').onclick=()=>{zoom=Math.min(2.5,zoom+.15);applyZoom()};
-document.getElementById('minus').onclick=()=>{zoom=Math.max(1,zoom-.15);applyZoom()};
-document.getElementById('reset').onclick=()=>{
- zoom=1;applyZoom();stage.scrollTo({left:0,top:0});
- document.querySelectorAll('.pin').forEach(x=>x.classList.remove('active'));
- document.getElementById('name').textContent='Select a location';
- document.getElementById('desc').textContent='Tap anywhere on the map, including open water, a plot, Main Land or an oil rig, to choose a fleet destination.';
- const send=document.getElementById('sendFleet');send.disabled=true;
- document.getElementById('fleetToken').style.left='50%';document.getElementById('fleetToken').style.top='76%';document.getElementById('fleetToken').style.display='block';
- activeShips.forEach(ship=>ship.remove());activeShips.length=0;selectedShip=null;
- document.getElementById('fleetArrow').style.display='none';
- document.getElementById('fleetStatus').textContent='Fleet is waiting. Tap anywhere on the map to choose a destination.';
+
+document.getElementById('callFleet').addEventListener('click',()=>{
+ const status=document.getElementById('fleetStatus');
+ const arrow=document.getElementById('fleetArrow');
+ const send=document.getElementById('sendFleet');
+
+ if(activeShips.length===0){
+  status.textContent='No ships are currently deployed.';
+  return;
+ }
+
+ send.disabled=true;
+ status.textContent='All ships are returning to base…';
+
+ activeShips.forEach(ship=>{
+  ship.style.left='50%';
+  ship.style.top='76%';
+ });
+
+ window.setTimeout(()=>{
+  activeShips.forEach(ship=>ship.remove());
+  activeShips.length=0;
+  selectedShip=null;
+  arrow.style.display='none';
+  document.getElementById('fleetToken').style.display='none';
+  send.disabled=false;
+  status.textContent='All ships returned to base and disappeared.';
+ },1850);
+});
+
+function applyZoom(){
+ world.style.transform=`scale(${zoom})`;
+}
+
+document.getElementById('plus').onclick=()=>{
+ zoom=Math.min(2.5,zoom+.15);
+ applyZoom();
 };
+
+document.getElementById('minus').onclick=()=>{
+ zoom=Math.max(1,zoom-.15);
+ applyZoom();
+};
+
+document.getElementById('reset').onclick=()=>{
+ zoom=1;
+ applyZoom();
+ stage.scrollTo({left:0,top:0});
+
+ document.querySelectorAll('.pin').forEach(x=>x.classList.remove('active'));
+
+ document.getElementById('name').textContent='Select a location';
+ document.getElementById('desc').textContent='Tap anywhere on the map to choose a fleet destination.';
+
+ const send=document.getElementById('sendFleet');
+ send.disabled=true;
+ delete send.dataset.x;
+ delete send.dataset.y;
+ delete send.dataset.destination;
+
+ activeShips.forEach(ship=>ship.remove());
+ activeShips.length=0;
+ selectedShip=null;
+
+ document.getElementById('fleetToken').style.display='none';
+ document.getElementById('fleetArrow').style.display='none';
+
+ document.getElementById('fleetStatus').textContent='Fleet is waiting. Call a ship to begin.';
+};
+
 </script>
 </body></html>
