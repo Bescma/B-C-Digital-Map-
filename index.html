@@ -16,7 +16,7 @@ button:hover{background:#236987}.layout{display:grid;grid-template-columns:minma
 .pin{position:absolute;transform:translate(-50%,-50%);border:2px solid white;background:#102f45e8;color:white;border-radius:50%;width:34px;height:34px;font-weight:700;box-shadow:0 2px 8px #001b2c;cursor:pointer}
 .pin.island{border-radius:9px;background:#218b45;width:28px;height:28px;border-color:#e8ffbd}
 .pin.active{outline:4px solid #ffd34e;outline-offset:3px;background:#a45c13}
-.fleet-token{position:absolute;left:50%;top:76%;transform:translate(-50%,-50%);z-index:6;font-size:28px;line-height:1;filter:drop-shadow(0 2px 3px #002033);transition:left 1.8s ease-in-out,top 1.8s ease-in-out;pointer-events:none;display:none}
+.fleet-token{position:absolute;left:50%;top:76%;transform:translate(-50%,-50%);z-index:6;font-size:28px;line-height:1;filter:drop-shadow(0 2px 3px #002033);transition:left 1.8s ease-in-out,top 1.8s ease-in-out;pointer-events:none;display:none;display-reappear:Call-next-ship}
 .extra-ship{position:absolute;z-index:7;transform:translate(-50%,-50%);font-size:25px;line-height:1;filter:drop-shadow(0 2px 3px #002033);transition:left 1.8s ease-in-out,top 1.8s ease-in-out;cursor:grab;padding:5px;border-radius:8px;pointer-events:auto;touch-action:none;user-select:none}.extra-ship.dragging{cursor:grabbing;transition:none;z-index:12}.extra-ship.selected{outline:3px solid #ffe05a;background:#163d55}
 .fleet-arrow{position:absolute;z-index:5;left:50%;top:76%;width:0;height:0;transform-origin:0 50%;pointer-events:none;display:none}
 .fleet-arrow:before{content:'';position:absolute;left:0;top:-3px;width:var(--arrow-length,100px);height:6px;background:#ffe05a;border:1px solid #593f00;border-radius:5px;box-shadow:0 0 7px #ffdf55}
