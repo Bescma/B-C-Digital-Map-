@@ -229,74 +229,141 @@ document.getElementById('sendFleet').addEventListener('click',()=>{
  if(send.disabled) return;
 
  if(!token || !token.isConnected){
-  document.getElementById('fleetStatus').textContent='Call and select a ship first.';
-  return;
- }
 
- if(send.dataset.x===undefined || send.dataset.y===undefined){
-  document.getElementById('fleetStatus').textContent='Choose a destination on the map first.';
-  return;
- }
+let shipsCalled = 0;
+let selectedShip = null;
+const activeShips = [];
 
- const arrow=document.getElementById('fleetArrow');
- const startX=parseFloat(token.style.left)||50;
- const startY=parseFloat(token.style.top)||76;
- const endX=parseFloat(send.dataset.x);
- const endY=parseFloat(send.dataset.y);
+const callNextShip = document.getElementById('callNextShip');
+const sendFleet = document.getElementById('sendFleet');
+const callFleet = document.getElementById('callFleet');
+const fleetStatus = document.getElementById('fleetStatus');
+const fleetArrow = document.getElementById('fleetArrow');
+const fleetToken = document.getElementById('fleetToken');
 
- const dx=(endX-startX)*world.clientWidth/100;
- const dy=(endY-startY)*world.clientHeight/100;
- const length=Math.sqrt(dx*dx+dy*dy);
- const angle=Math.atan2(dy,dx)*180/Math.PI;
+// Call one ship to the base. It does not move automatically.
+callNextShip.addEventListener('click', () => {
+  shipsCalled++;
 
- arrow.style.left=startX+'%';
- arrow.style.top=startY+'%';
- arrow.style.setProperty('--arrow-length',Math.max(0,length-20)+'px');
- arrow.style.transform='rotate('+angle+'deg)';
- arrow.style.display=length>24?'block':'none';
+  const ship = document.createElement('div');
+  ship.className = 'extra-ship';
+  ship.textContent = '🚢';
+  ship.setAttribute('aria-label', 'Ship ' + shipsCalled);
+  ship.title = 'Ship ' + shipsCalled + ' — tap to select';
+  ship.dataset.shipId = String(shipsCalled);
 
- token.style.left=endX+'%';
- token.style.top=endY+'%';
+  ship.style.position = 'absolute';
+  ship.style.left = '50%';
+  ship.style.top = '76%';
+  ship.style.transition = 'left 1.8s ease, top 1.8s ease';
 
- const movingName='Ship '+token.dataset.shipId;
- document.getElementById('fleetStatus').textContent=movingName+' moving to '+(send.dataset.destination||'selected location')+'…';
+  ship.addEventListener('click', (event) => {
+    event.stopPropagation();
 
- send.disabled=true;
+    document.querySelectorAll('.extra-ship')
+      .forEach(item => item.classList.remove('selected'));
 
- window.setTimeout(()=>{
-  document.getElementById('fleetStatus').textContent=movingName+' arrived.';
-  arrow.style.display='none';
-  send.disabled=false;
- },1850);
+    ship.classList.add('selected');
+    selectedShip = ship;
+
+    document.getElementById('name').textContent =
+      'Ship ' + ship.dataset.shipId;
+
+    document.getElementById('desc').textContent =
+      'Ship selected. Choose a destination and press Send Fleet.';
+
+    fleetStatus.textContent =
+      'Ship ' + ship.dataset.shipId + ' selected.';
+  });
+
+  world.appendChild(ship);
+  activeShips.push(ship);
+
+  fleetToken.style.display = 'none';
+
+  fleetStatus.textContent =
+    'Ship ' + shipsCalled + ' called to base. Select it and choose a destination.';
 });
 
-document.getElementById('callFleet').addEventListener('click',()=>{
- const status=document.getElementById('fleetStatus');
- const arrow=document.getElementById('fleetArrow');
- const send=document.getElementById('sendFleet');
+// Send only the selected ship to the chosen destination.
+sendFleet.addEventListener('click', () => {
+  if (!selectedShip || !selectedShip.isConnected) {
+    fleetStatus.textContent = 'Call and select a ship first.';
+    return;
+  }
 
- if(activeShips.length===0){
-  status.textContent='No ships are currently deployed.';
-  return;
- }
+  if (sendFleet.dataset.x === undefined ||
+      sendFleet.dataset.y === undefined) {
+    fleetStatus.textContent = 'Choose a destination on the map first.';
+    return;
+  }
 
- send.disabled=true;
- status.textContent='All ships are returning to base…';
+  const startX = parseFloat(selectedShip.style.left) || 50;
+  const startY = parseFloat(selectedShip.style.top) || 76;
+  const endX = parseFloat(sendFleet.dataset.x);
+  const endY = parseFloat(sendFleet.dataset.y);
 
- activeShips.forEach(ship=>{
-  ship.style.left='50%';
-  ship.style.top='76%';
- });
+  const dx = (endX - startX) * world.clientWidth / 100;
+  const dy = (endY - startY) * world.clientHeight / 100;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+  const angle = Math.atan2(dy, dx) * 180 / Math.PI;
 
- window.setTimeout(()=>{
-  activeShips.forEach(ship=>ship.remove());
-  activeShips.length=0;
-  selectedShip=null;
-  arrow.style.display='none';
-  document.getElementById('fleetToken').style.display='none';
-  send.disabled=false;
-  status.textContent='All ships returned to base and disappeared.';
- },1850);
+  fleetArrow.style.left = startX + '%';
+  fleetArrow.style.top = startY + '%';
+  fleetArrow.style.setProperty(
+    '--arrow-length',
+    Math.max(0, distance - 20) + 'px'
+  );
+  fleetArrow.style.transform = 'rotate(' + angle + 'deg)';
+  fleetArrow.style.display = distance > 24 ? 'block' : 'none';
+
+  const shipName = 'Ship ' + selectedShip.dataset.shipId;
+
+  selectedShip.style.left = endX + '%';
+  selectedShip.style.top = endY + '%';
+
+  sendFleet.disabled = true;
+
+  fleetStatus.textContent =
+    shipName + ' moving to ' +
+    (sendFleet.dataset.destination || 'selected location') + '…';
+
+  window.setTimeout(() => {
+    fleetStatus.textContent = shipName + ' arrived.';
+    fleetArrow.style.display = 'none';
+    sendFleet.disabled = false;
+  }, 1850);
+});
+
+// Recall all ships and make them disappear at base.
+callFleet.addEventListener('click', () => {
+  if (activeShips.length === 0) {
+    fleetStatus.textContent = 'No ships are currently deployed.';
+    return;
+  }
+
+  sendFleet.disabled = true;
+  fleetStatus.textContent = 'All ships are returning to base…';
+
+  activeShips.forEach(ship => {
+    ship.style.left = '50%';
+    ship.style.top = '76%';
+  });
+
+  window.setTimeout(() => {
+    activeShips.forEach(ship => ship.remove());
+
+    activeShips.length = 0;
+    selectedShip = null;
+
+    fleetArrow.style.display = 'none';
+    fleetToken.style.display = 'none';
+
+    sendFleet.disabled = false;
+
+    fleetStatus.textContent =
+      'All ships returned to base and disappeared.';
+  }, 1850);
 });
 
 function applyZoom(){
