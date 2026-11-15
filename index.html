@@ -620,17 +620,6 @@ document.querySelectorAll(
 
 });
 
-// Open screenshot picker
-document.getElementById("analyzeLayout")
-.addEventListener("click", function() {
-  if (!selectedLayoutPlotId) {
-    document.getElementById("layoutStatus").textContent =
-      "Select a plot first.";
-    return;
-  }
-
-  document.getElementById("layoutImage").click();
-});
 
 // Save screenshot to selected plot
 document.getElementById("layoutImage")
