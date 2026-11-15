@@ -451,9 +451,24 @@ function createShip(x, y) {
   group.setAttribute("transform",
     `translate(${x} ${y})`);
   
+  const plotColors = {
+  1: "#ff4545",
+  2: "#398cff",
+  3: "#35d878",
+  4: "#ffdc35",
+  5: "#bd72ff",
+  6: "#ff963d",
+  7: "#ffffff",
+  8: "#36e5e5"
+};
+
+const shipColor = plotColors[
+  selectedSpawnPlot ? selectedSpawnPlot.id : 0
+] || "#65eaff";
+  
 group.innerHTML = `
   <polygon points="0,-13 24,0 0,13 6,0"
-    fill="#65eaff"
+    fill="${shipColor}" 
     stroke="white"
     stroke-width="2"/>
   <rect x="-9" y="-5" width="12" height="10"
