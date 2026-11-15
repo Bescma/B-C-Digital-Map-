@@ -1086,22 +1086,40 @@ canvas.addEventListener("contextmenu", function(event) {
   scene3D.add(ocean);
 
   function addIsland(x, z, width, depth, color) {
-    const island = new THREE.Mesh(
-      new THREE.CylinderGeometry(
-        Math.min(width, depth) * 0.48,
-        Math.min(width, depth) * 0.58,
-        22,
-        48
-      ),
-      new THREE.MeshStandardMaterial({
-        color: color,
-        roughness: 0.9
-      })
-    );
+  const island = new THREE.Mesh(
+    new THREE.BoxGeometry(width, 22, depth),
+    new THREE.MeshStandardMaterial({
+      color: color,
+      roughness: 0.9
+    })
+  );
 
-    island.scale.set(width / Math.min(width, depth), 1, depth / Math.min(width, depth));
-    island.position.set(x, 4, z);
-    scene3D.add(island);
+  island.position.set(x, 4, z);
+scene3D.add(island);
+
+// Green grass surface
+const grass = new THREE.Mesh(
+  new THREE.BoxGeometry(width - 8, 3, depth - 8),
+  new THREE.MeshStandardMaterial({
+    color: 0x659447,
+    roughness: 1
+  })
+);
+
+grass.position.set(x, 16, z);
+scene3D.add(grass);
+
+// Sandy beach border
+const beach = new THREE.Mesh(
+  new THREE.BoxGeometry(width + 12, 8, depth + 12),
+  new THREE.MeshStandardMaterial({
+    color: 0xd8c18a,
+    roughness: 1
+  })
+);
+
+beach.position.set(x, -3, z);
+scene3D.add(beach);
   }
 
   // Central island
