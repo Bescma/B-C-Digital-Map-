@@ -941,6 +941,10 @@ document.getElementById("mapViewToggle").addEventListener("click", function() {
     map2D.style.display = "none";
     map3D.style.display = "block";
     create3DMap();
+    console.log("3D map function started");
+console.log("Three.js:", typeof THREE);
+console.log("Renderer:", renderer3D);
+console.log("Scene:", scene3D);
     if (renderer3D && camera3D) {
   const width = map3D.clientWidth;
   const height = map3D.clientHeight;
