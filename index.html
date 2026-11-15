@@ -276,7 +276,15 @@ svg {
 </div>
 
 <div class="map-container">
-
+<div id="threeDMap" style="
+  display:none;
+  width:100%;
+  height:600px;
+  position:relative;
+  overflow:hidden;
+  border-radius:12px;
+  background:#073c59;
+"></div>
 <svg id="world" viewBox="0 0 1000 650"
      xmlns="http://www.w3.org/2000/svg">
 
@@ -428,7 +436,7 @@ svg {
 <div id="plotSimulator" style="display:none; padding:15px; background:#102b3d; color:white; border-radius:12px;">
   <h2 id="simulatorTitle">Plot Simulator</h2>
  
-  
+  <button id="mapViewToggle">Switch to 3D</button>
   <button id="placeMissile">🚀 Missile</button>
 <button id="placeInterceptor">🛡️ Interceptor</button>
 
@@ -445,7 +453,7 @@ svg {
 
   <button id="closeSimulator">Close Simulator</button>
 </div>
-
+https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js
 <script>
 let activeSimulatorPlotId = null;
 
@@ -920,6 +928,233 @@ document.getElementById("openTutorial").addEventListener("click", function() {
 document.getElementById("closeTutorial").addEventListener("click", function() {
   document.getElementById("tutorialPanel").style.display = "none";
 });
+  let is3DView = false;
+
+document.getElementById("mapViewToggle").addEventListener("click", function() {
+  const map2D = document.getElementById("world");
+  const map3D = document.getElementById("threeDMap");
+
+  is3DView = !is3DView;
+
+  if (is3DView) {
+    map2D.style.display = "none";
+    map3D.style.display = "block";
+    create3DMap();
+    this.textContent = "Switch to 2D";
+  } else {
+    map2D.style.display = "block";
+    map3D.style.display = "none";
+    this.textContent = "Switch to 3D";
+  }
+});
+  let scene3D = null;
+let camera3D = null;
+let renderer3D = null;
+let animation3D = null;
+  
+let cameraDragging = false;
+let cameraLastX = 0;
+let cameraLastY = 0;
+let cameraRotation = 0.7;
+let cameraTilt = 0.75;
+let cameraDistance = 950;
+
+function create3DMap() {
+  if (scene3D) return;
+
+  if (typeof THREE === "undefined") {
+    alert("3D library failed to load. Please refresh the page.");
+    return;
+  }
+
+  const container = document.getElementById("threeDMap");
+
+  scene3D = new THREE.Scene();
+  scene3D.background = new THREE.Color(0x87ceeb);
+  scene3D.fog = new THREE.Fog(0x87ceeb, 700, 1800);
+
+  camera3D = new THREE.PerspectiveCamera(
+    50,
+    container.clientWidth / container.clientHeight,
+    0.1,
+    3000
+  );
+
+  camera3D.position.set(650, 550, 750);
+  camera3D.lookAt(0, 0, 0);
+
+  renderer3D = new THREE.WebGLRenderer({ antialias: true });
+  renderer3D.setSize(container.clientWidth, container.clientHeight);
+  renderer3D.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  container.appendChild(renderer3D.domElement);
+  // Free camera controls
+const cameraTarget = new THREE.Vector3(0, 0, 0);
+
+function updateCameraPosition() {
+  cameraDistance = Math.max(250, Math.min(1600, cameraDistance));
+  cameraTilt = Math.max(0.15, Math.min(1.45, cameraTilt));
+
+  camera3D.position.set(
+    cameraTarget.x + cameraDistance * Math.sin(cameraRotation) * Math.cos(cameraTilt),
+    cameraTarget.y + cameraDistance * Math.sin(cameraTilt),
+    cameraTarget.z + cameraDistance * Math.cos(cameraRotation) * Math.cos(cameraTilt)
+  );
+
+  camera3D.lookAt(cameraTarget);
+}
+
+updateCameraPosition();
+
+const canvas = renderer3D.domElement;
+canvas.style.touchAction = "none";
+
+// Rotate with mouse or finger
+canvas.addEventListener("pointerdown", function(event) {
+  cameraDragging = true;
+  cameraLastX = event.clientX;
+  cameraLastY = event.clientY;
+  canvas.setPointerCapture(event.pointerId);
+});
+
+canvas.addEventListener("pointermove", function(event) {
+  if (!cameraDragging) return;
+
+  const dx = event.clientX - cameraLastX;
+const dy = event.clientY - cameraLastY;
+
+if (event.buttons === 2 || event.shiftKey) {
+  const panSpeed = cameraDistance * 0.0015;
+
+  cameraTarget.x -= dx * panSpeed;
+  cameraTarget.z += dy * panSpeed;
+} else {
+  cameraRotation -= dx * 0.006;
+  cameraTilt += dy * 0.006;
+}
+
+  cameraLastX = event.clientX;
+  cameraLastY = event.clientY;
+
+  updateCameraPosition();
+});
+
+function stopCameraDrag() {
+  cameraDragging = false;
+}
+
+canvas.addEventListener("pointerup", stopCameraDrag);
+canvas.addEventListener("pointercancel", stopCameraDrag);
+
+// Zoom with mouse wheel
+canvas.addEventListener("wheel", function(event) {
+  event.preventDefault();
+  cameraDistance += event.deltaY * 0.8;
+  updateCameraPosition();
+}, { passive: false });
+
+// Pan with right mouse button or Shift + drag
+canvas.addEventListener("contextmenu", function(event) {
+  event.preventDefault();
+});
+
+  const sunlight = new THREE.DirectionalLight(0xffffff, 2);
+  sunlight.position.set(400, 700, 300);
+  scene3D.add(sunlight);
+
+  scene3D.add(new THREE.AmbientLight(0xffffff, 0.7));
+
+  const ocean = new THREE.Mesh(
+    new THREE.PlaneGeometry(1400, 1000),
+    new THREE.MeshStandardMaterial({
+      color: 0x087da5,
+      roughness: 0.35,
+      metalness: 0.2
+    })
+  );
+
+  ocean.rotation.x = -Math.PI / 2;
+  ocean.position.y = -8;
+  scene3D.add(ocean);
+
+  function addIsland(x, z, width, depth, color) {
+    const island = new THREE.Mesh(
+      new THREE.CylinderGeometry(
+        Math.min(width, depth) * 0.48,
+        Math.min(width, depth) * 0.58,
+        22,
+        48
+      ),
+      new THREE.MeshStandardMaterial({
+        color: color,
+        roughness: 0.9
+      })
+    );
+
+    island.scale.set(width / Math.min(width, depth), 1, depth / Math.min(width, depth));
+    island.position.set(x, 4, z);
+    scene3D.add(island);
+  }
+
+  // Central island
+  addIsland(0, 0, 300, 230, 0x6b9b50);
+
+  // Eight surrounding plots
+  const plots = [
+    [-45, -440], [260, -330], [440, -120], [440, 180],
+    [250, 340], [-250, 340], [-440, 150], [-440, -170]
+  ];
+
+  plots.forEach(([x, z]) => {
+    addIsland(x, z, 115, 95, 0x83a85a);
+  });
+
+  function addOilRig(x, z) {
+    const metal = new THREE.MeshStandardMaterial({
+      color: 0x596b78,
+      metalness: 0.7,
+      roughness: 0.35
+    });
+
+    const platform = new THREE.Mesh(
+      new THREE.BoxGeometry(65, 8, 55),
+      new THREE.MeshStandardMaterial({ color: 0x444f58 })
+    );
+    platform.position.set(x, 35, z);
+    scene3D.add(platform);
+
+    const legs = [
+      [-23, -18], [23, -18], [-23, 18], [23, 18]
+    ];
+
+    legs.forEach(([lx, lz]) => {
+      const leg = new THREE.Mesh(
+        new THREE.CylinderGeometry(3, 4, 65, 8),
+        metal
+      );
+      leg.position.set(x + lx, 2, z + lz);
+      scene3D.add(leg);
+    });
+
+    const tower = new THREE.Mesh(
+      new THREE.BoxGeometry(15, 38, 15),
+      metal
+    );
+    tower.position.set(x, 58, z);
+    scene3D.add(tower);
+  }
+
+  addOilRig(-300, -220);
+  addOilRig(300, -220);
+  addOilRig(-300, 220);
+  addOilRig(300, 220);
+
+  function animate3D() {
+    animation3D = requestAnimationFrame(animate3D);
+    renderer3D.render(scene3D, camera3D);
+  }
+
+  animate3D();
+      }
 </script>
 
   
