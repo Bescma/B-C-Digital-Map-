@@ -585,6 +585,7 @@ map.addEventListener("click", function(event) {
 // SEND SELECTED FLEET
 // =================================
 
+
 sendButton.addEventListener("click", function() {
 
   if (!selectedShip || !destination) {
@@ -595,26 +596,32 @@ sendButton.addEventListener("click", function() {
 
   const ship = selectedShip;
 
-const dx = targetX - ship.x;
-const dy = targetY - ship.y;
+  // Get destination coordinates
+  const targetX = destination.x;
+  const targetY = destination.y;
 
-const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+  // Calculate direction
+  const dx = targetX - ship.x;
+  const dy = targetY - ship.y;
 
-ship.element.setAttribute(
-  "transform",
-  `translate(${targetX} ${targetY}) rotate(${angle})`
-);
+  const angle = Math.atan2(dy, dx) * 180 / Math.PI;
 
-ship.x = targetX;
-ship.y = targetY;
- 
+  // Move and rotate ship
+  ship.element.setAttribute(
+    "transform",
+    `translate(${targetX} ${targetY}) rotate(${angle})`
+  );
+
+  // Save new position
+  ship.x = targetX;
+  ship.y = targetY;
 
   statusText.textContent =
-    "Fleet " + ship.id + " is moving to its destination.";
+    "Fleet " + ship.id + " reached its destination.";
 
   showInfo(
     "Fleet " + ship.id,
-    "Fleet is travelling to its selected destination."
+    "Fleet reached its selected destination."
   );
 
   destination = null;
@@ -629,12 +636,6 @@ ship.y = targetY;
 
 });
 
-// =================================
-// PLOT INTERACTIONS AND RENAMING
-// =================================
-
-
- 
 // =================================
 // OIL RIG INTERACTIONS
 // =================================
