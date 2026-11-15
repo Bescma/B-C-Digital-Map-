@@ -190,6 +190,12 @@ svg {
   stroke: #24543f;
   stroke-width: 3px;
   }
+
+  .island.spawn-selected {
+  stroke: #00ffff;
+  stroke-width: 5px;
+  filter: brightness(1.4);
+  }
 </style>
 </head>
 
@@ -505,7 +511,37 @@ function selectShip(ship) {
     "Fleet " + ship.id + " selected.";
 }
 
+// SELECT SHIP SPAWN PLOT
 
+document.querySelectorAll("#islands .island").forEach(plot => {
+
+  plot.addEventListener("click", function(event) {
+
+    event.stopPropagation();
+
+    document.querySelectorAll("#islands .island")
+      .forEach(p => p.classList.remove("spawn-selected"));
+
+    this.classList.add("spawn-selected");
+
+    const x = Number(this.getAttribute("x"));
+    const y = Number(this.getAttribute("y"));
+    const width = Number(this.getAttribute("width"));
+    const height = Number(this.getAttribute("height"));
+
+    selectedSpawnPlot = {
+      x: x + width / 2,
+      y: y + height / 2,
+      id: this.dataset.plotId
+    };
+
+    statusText.textContent =
+      "Plot " + selectedSpawnPlot.id +
+      " selected as ship spawn point.";
+
+  });
+let selectedSpawnPlot = null;
+  
 // =================================
 // CALL NEXT FLEET
 // =================================
@@ -513,7 +549,16 @@ function selectShip(ship) {
 document.getElementById("callNextShip")
 .addEventListener("click", function() {
 
-  const ship = createShip(90, 570);
+  if (!selectedSpawnPlot) {
+    statusText.textContent =
+      "Select a plot before calling a ship.";
+    return;
+  }
+
+  const ship = createShip(
+    selectedSpawnPlot.x,
+    selectedSpawnPlot.y
+  );
 
   selectShip(ship);
 
@@ -524,10 +569,10 @@ document.getElementById("callNextShip")
 
   statusText.textContent =
     "Fleet " + ship.id +
-    " arrived. Select a destination on the map.";
+    " spawned at Plot " + selectedSpawnPlot.id +
+    ". Select a destination.";
 
 });
-
 
 // =================================
 // SELECT DESTINATION
