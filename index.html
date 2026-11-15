@@ -985,7 +985,9 @@ function create3DMap() {
   }
 
   const container = document.getElementById("threeDMap");
-
+console.log("3D container:", container);
+console.log("Container width:", container.clientWidth);
+console.log("Container height:", container.clientHeight);
   scene3D = new THREE.Scene();
   scene3D.background = new THREE.Color(0x87ceeb);
   scene3D.fog = new THREE.Fog(0x87ceeb, 700, 1800);
