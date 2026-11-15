@@ -1072,18 +1072,32 @@ canvas.addEventListener("contextmenu", function(event) {
 
   scene3D.add(new THREE.AmbientLight(0xffffff, 0.7));
 
-  const ocean = new THREE.Mesh(
-    new THREE.PlaneGeometry(2000, 1800),
-    new THREE.MeshStandardMaterial({
-      color: 0x087da5,
-      roughness: 0.35,
-      metalness: 0.2
-    })
-  );
+  const oceanGeometry = new THREE.PlaneGeometry(
+  2000, 1800, 100, 100
+);
 
-  ocean.rotation.x = -Math.PI / 2;
-  ocean.position.y = -8;
-  scene3D.add(ocean);
+const oceanMaterial = new THREE.MeshStandardMaterial({
+  color: 0x087da5,
+  roughness: 0.3,
+  metalness: 0.25,
+  side: THREE.DoubleSide
+});
+
+const ocean = new THREE.Mesh(
+  oceanGeometry,
+  oceanMaterial
+);
+
+ocean.rotation.x = -Math.PI / 2;
+ocean.position.y = -8;
+scene3D.add(ocean);
+
+const oceanPositions = oceanGeometry.attributes.position;
+const originalHeights = [];
+
+for (let i = 0; i < oceanPositions.count; i++) {
+  originalHeights.push(oceanPositions.getZ(i));
+}
 
   function addIsland(x, z, width, depth, color) {
   const island = new THREE.Mesh(
@@ -1180,14 +1194,30 @@ const plots = [
   addOilRig(300, -220);
   addOilRig(-300, 220);
   addOilRig(300, 220);
+const waveClock = new THREE.Clock();
 
-  function animate3D() {
-    animation3D = requestAnimationFrame(animate3D);
-    renderer3D.render(scene3D, camera3D);
+function animate3D() {
+  animation3D = requestAnimationFrame(animate3D);
+
+  const time = waveClock.getElapsedTime();
+
+  for (let i = 0; i < oceanPositions.count; i++) {
+    const x = oceanPositions.getX(i);
+    const y = oceanPositions.getY(i);
+
+    const wave =
+      Math.sin(x * 0.025 + time * 1.5) * 1.2 +
+      Math.cos(y * 0.025 + time) * 0.8;
+
+    oceanPositions.setZ(i, originalHeights[i] + wave);
   }
 
-  animate3D();
-      }
+  oceanPositions.needsUpdate = true;
+  oceanGeometry.computeVertexNormals();
+
+  renderer3D.render(scene3D, camera3D);
+} 
+  
 </script>
 
   
