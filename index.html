@@ -909,7 +909,61 @@ document.getElementById("renamePlotButton")
 });
  
 
+const simulator = document.getElementById("plotSimulator");
+const simulatorTitle = document.getElementById("simulatorTitle");
+const simulatorStatus = document.getElementById("simulatorStatus");
+const layoutGrid = document.getElementById("layoutGrid");
+
+document.querySelectorAll("#islands .island").forEach(plot => {
+  plot.addEventListener("click", function(event) {
+    event.stopPropagation();
+
+    const plotId = this.dataset.plotId || "Unknown";
+
+    simulatorTitle.textContent = "Plot " + plotId + " Simulator";
+    simulatorStatus.textContent =
+      "Missile and Interceptor layout for Plot " + plotId;
+
+    layoutGrid.innerHTML = "";
+
+    for (let i = 0; i < 100; i++) {
+      const cell = document.createElement("div");
+
+      cell.style.aspectRatio = "1";
+      cell.style.background = "#24465a";
+      cell.style.border = "1px solid #547487";
+      cell.style.borderRadius = "3px";
+
+      layoutGrid.appendChild(cell);
+    }
+
+    simulator.style.display = "block";
+  });
+});
+
+document.getElementById("closeSimulator").addEventListener("click", () => {
+  simulator.style.display = "none";
+});
+
 </script>
+
+<div id="plotSimulator" style="display:none; padding:15px; background:#102b3d; color:white; border-radius:12px;">
+  <h2 id="simulatorTitle">Plot Simulator</h2>
+  <p>Missile and Interceptor Layout</p>
+
+  <div id="layoutGrid" style="
+    display:grid;
+    grid-template-columns:repeat(10, 1fr);
+    gap:3px;
+    background:#071923;
+    padding:6px;
+    border-radius:8px;
+  "></div>
+
+  <p id="simulatorStatus">Select a plot to begin.</p>
+
+  <button id="closeSimulator">Close Simulator</button>
+</div>
 
 </body>
 </html>
