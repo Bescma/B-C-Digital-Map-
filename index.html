@@ -597,30 +597,6 @@ document.querySelectorAll("#islands .island").forEach(plot => {
   
 localStorage.removeItem("savedPlotScreenshots");
 
-// Select a plot for screenshot management
-document.querySelectorAll(
-  "#islands .island"
-).forEach(plot => {
-
-  plot.addEventListener("click", function() {
-    selectedLayoutPlotId = this.dataset.plotId;
-
-    document.getElementById("layoutStatus").textContent =
-      "Selected Plot " + selectedLayoutPlotId;
-
-    const preview = document.getElementById("layoutPreview");
-
-    if (plotLayouts[selectedLayoutPlotId]) {
-      preview.src = plotLayouts[selectedLayoutPlotId];
-      preview.style.display = "block";
-    } else {
-      preview.style.display = "none";
-    }
-  });
-
-});
-
-
 // Clear selected plot screenshot
 document.getElementById("clearLayout")
 .addEventListener("click", function() {
