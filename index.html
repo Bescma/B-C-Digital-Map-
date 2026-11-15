@@ -444,15 +444,25 @@ function createShip(x, y) {
   group.setAttribute("class", "ship");
   group.setAttribute("transform",
     `translate(${x} ${y})`);
-
-  group.innerHTML = `
-    <polygon points="0,-13 24,0 0,13 6,0"/>
-    <rect x="-9" y="-5" width="12" height="10"
-          rx="2"/>
-    <text x="-8" y="27"
-          fill="white"
-          font-size="11">F${id}</text>
-  `;
+  
+group.innerHTML = `
+  <polygon points="0,-13 24,0 0,13 6,0"
+    fill="#65eaff"
+    stroke="white"
+    stroke-width="2"/>
+  <rect x="-9" y="-5" width="12" height="10"
+    rx="2"
+    fill="#ffffff"
+    stroke="#65eaff"
+    stroke-width="1.5"/>
+  <text x="-8" y="27"
+    fill="white"
+    font-size="13"
+    font-weight="bold"
+    stroke="#073c59"
+    stroke-width="0.5">F${id}</text>
+`;
+ 
 
   group.addEventListener("click", function(event) {
     event.stopPropagation();
