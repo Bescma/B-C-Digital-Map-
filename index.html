@@ -1211,6 +1211,26 @@ for (let i = 0; i < oceanPositions.count; i++) {
   scene3D.add(grass);
   islandMeshes3D.push(grass);
   }
+
+// Central island
+addIsland(0, 0, 300, 230, 0x6b9b50);
+
+// Eight surrounding plots
+const plots = [
+  [-420, -350],
+  [0, -470],
+  [420, -350],
+  [480, 0],
+  [420, 350],
+  [0, 470],
+  [-420, 350],
+  [-480, 0]
+];
+
+plots.forEach(([x, z]) => {
+  addIsland(x, z, 115, 95, 0x83a85a);
+});
+  
   addOilRig(-300, -220);
   addOilRig(300, -220);
   addOilRig(-300, 220);
