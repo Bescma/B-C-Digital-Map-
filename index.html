@@ -279,7 +279,7 @@ svg {
 <div id="threeDMap" style="
   display:none;
   width:100%;
-  height:600px;
+  height:850px;
   position:relative;
   overflow:hidden;
   border-radius:12px;
@@ -966,7 +966,7 @@ let cameraLastX = 0;
 let cameraLastY = 0;
 let cameraRotation = 0.7;
 let cameraTilt = 0.75;
-let cameraDistance = 950;
+let cameraDistance = 1250;
 
 function create3DMap() {
   if (scene3D) return;
@@ -1073,7 +1073,7 @@ canvas.addEventListener("contextmenu", function(event) {
   scene3D.add(new THREE.AmbientLight(0xffffff, 0.7));
 
   const ocean = new THREE.Mesh(
-    new THREE.PlaneGeometry(1400, 1000),
+    new THREE.PlaneGeometry(2000, 1800),
     new THREE.MeshStandardMaterial({
       color: 0x087da5,
       roughness: 0.35,
