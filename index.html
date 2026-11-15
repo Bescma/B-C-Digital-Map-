@@ -212,39 +212,51 @@ svg {
     <path d="M100 0 V650 M200 0 V650 M300 0 V650 M400 0 V650 M500 0 V650 M600 0 V650 M700 0 V650 M800 0 V650 M900 0 V650"/>
   </g>
 
-<!-- 8 Renameable Plots + Central Island -->
+<!-- 8 Visible Plots + Central Island -->
 <g id="islands">
 
   <rect class="island" data-name="Plot 1"
     x="455" y="10" width="90" height="90"/>
+  <text class="plot-label" x="500" y="60">Plot 1</text>
 
   <rect class="island" data-name="Plot 2"
     x="790" y="70" width="90" height="90"/>
+  <text class="plot-label" x="835" y="120">Plot 2</text>
 
   <rect class="island" data-name="Plot 3"
     x="880" y="280" width="90" height="90"/>
+  <text class="plot-label" x="925" y="330">Plot 3</text>
 
   <rect class="island" data-name="Plot 4"
     x="790" y="490" width="90" height="90"/>
+  <text class="plot-label" x="835" y="540">Plot 4</text>
 
   <rect class="island" data-name="Plot 5"
     x="455" y="550" width="90" height="90"/>
+  <text class="plot-label" x="500" y="600">Plot 5</text>
 
   <rect class="island" data-name="Plot 6"
     x="120" y="490" width="90" height="90"/>
+  <text class="plot-label" x="165" y="540">Plot 6</text>
 
   <rect class="island" data-name="Plot 7"
     x="30" y="280" width="90" height="90"/>
+  <text class="plot-label" x="75" y="330">Plot 7</text>
 
   <rect class="island" data-name="Plot 8"
     x="120" y="70" width="90" height="90"/>
+  <text class="plot-label" x="165" y="120">Plot 8</text>
 
   <!-- Central Island -->
   <rect class="island" data-name="Central Island"
     x="390" y="245" width="220" height="180"/>
 
+  <text class="plot-label" x="500" y="340">
+    CENTRAL ISLAND
+  </text>
+
 </g>
- 
+
   <g class="map-label">
     <text x="165" y="60">NORTHERN ISLAND</text>
     <text x="710" y="85">EASTERN ISLAND</text>
@@ -588,7 +600,13 @@ document.querySelectorAll("#islands .island")
     if (newName === null) return;
 
     if (newName.trim() !== "") {
-      island.dataset.name = newName.trim();
+    island.dataset.name = newName.trim();
+
+const label = island.nextElementSibling;
+
+if (label && label.classList.contains("plot-label")) {
+  label.textContent = island.dataset.name;
+}
     }
 
     showInfo(
