@@ -610,11 +610,7 @@ document.querySelectorAll("#islands .island").forEach(plot => {
 
 });
   
-let selectedLayoutPlotId = null;
-
-const plotLayouts = JSON.parse(
-  localStorage.getItem("plotLayouts") || "{}"
-);
+localStorage.removeItem("savedPlotScreenshots");
 
 // Select a plot for screenshot management
 document.querySelectorAll(
@@ -945,15 +941,6 @@ document.querySelectorAll("#islands .island").forEach(plot => {
     const plotId = this.dataset.plotId || "Unknown";
 activeSimulatorPlotId = plotId;
 
-const preview = document.getElementById("opponentPreview");
-
-if (savedPlotScreenshots[plotId]) {
-  preview.src = savedPlotScreenshots[plotId];
-  preview.style.display = "block";
-} else {
-  preview.removeAttribute("src");
-  preview.style.display = "none";
-}
     simulatorTitle.textContent = "Plot " + plotId + " Simulator";
     simulatorStatus.textContent =
       "Missile and Interceptor layout for Plot " + plotId;
