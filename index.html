@@ -621,42 +621,6 @@ document.querySelectorAll(
 });
 
 
-// Save screenshot to selected plot
-document.getElementById("layoutImage")
-.addEventListener("change", function() {
-
-  const file = this.files[0];
-  if (!file || !selectedLayoutPlotId) return;
-
-  if (!file.type.startsWith("image/")) return;
-
-  const reader = new FileReader();
-
-  reader.onload = function() {
-    plotLayouts[selectedLayoutPlotId] = reader.result;
-
-    try {
-      localStorage.setItem(
-        "plotLayouts",
-        JSON.stringify(plotLayouts)
-      );
-
-      const preview = document.getElementById("layoutPreview");
-      preview.src = reader.result;
-      preview.style.display = "block";
-
-      document.getElementById("layoutStatus").textContent =
-        "Screenshot saved for Plot " + selectedLayoutPlotId;
-
-    } catch (error) {
-      document.getElementById("layoutStatus").textContent =
-        "Image too large. Try a smaller screenshot.";
-    }
-  };
-
-  reader.readAsDataURL(file);
-});
-
 // Clear selected plot screenshot
 document.getElementById("clearLayout")
 .addEventListener("click", function() {
