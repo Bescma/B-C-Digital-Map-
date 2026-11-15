@@ -595,16 +595,19 @@ sendButton.addEventListener("click", function() {
 
   const ship = selectedShip;
 
-  const targetX = destination.x;
-  const targetY = destination.y;
+const dx = targetX - ship.x;
+const dy = targetY - ship.y;
 
-  ship.x = targetX;
-  ship.y = targetY;
+const angle = Math.atan2(dy, dx) * 180 / Math.PI;
 
-  ship.element.setAttribute(
-    "transform",
-    `translate(${targetX} ${targetY})`
-  );
+ship.element.setAttribute(
+  "transform",
+  `translate(${targetX} ${targetY}) rotate(${angle})`
+);
+
+ship.x = targetX;
+ship.y = targetY;
+ 
 
   statusText.textContent =
     "Fleet " + ship.id + " is moving to its destination.";
