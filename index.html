@@ -940,6 +940,15 @@ document.getElementById("mapViewToggle").addEventListener("click", function() {
     map2D.style.display = "none";
     map3D.style.display = "block";
     create3DMap();
+    if (renderer3D && camera3D) {
+  const width = map3D.clientWidth;
+  const height = map3D.clientHeight;
+
+  renderer3D.setSize(width, height);
+
+  camera3D.aspect = width / height;
+  camera3D.updateProjectionMatrix();
+  }
     this.textContent = "Switch to 2D";
   } else {
     map2D.style.display = "block";
