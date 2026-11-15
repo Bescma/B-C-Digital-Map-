@@ -567,20 +567,33 @@ sendButton.addEventListener("click", function() {
 
 });
 
-
 // =================================
-// ISLAND INTERACTIONS
+// PLOT INTERACTIONS AND RENAMING
 // =================================
 
-document.querySelectorAll(".island").forEach(island => {
+document.querySelectorAll("#islands .island")
+.forEach(island => {
 
   island.addEventListener("click", function(event) {
 
     event.stopPropagation();
 
+    const oldName = island.dataset.name;
+
+    const newName = prompt(
+      "Enter a new name for " + oldName + ":",
+      oldName
+    );
+
+    if (newName === null) return;
+
+    if (newName.trim() !== "") {
+      island.dataset.name = newName.trim();
+    }
+
     showInfo(
       island.dataset.name,
-      "Island location selected."
+      "Plot selected. You can rename this plot anytime."
     );
 
     statusText.textContent =
@@ -589,8 +602,7 @@ document.querySelectorAll(".island").forEach(island => {
   });
 
 });
-
-
+ 
 // =================================
 // OIL RIG INTERACTIONS
 // =================================
