@@ -13,7 +13,7 @@ button:hover{background:#236987}.layout{display:grid;grid-template-columns:minma
 .stage{position:relative;overflow:hidden;border:1px solid #28617a;border-radius:12px;background:#073c59;touch-action:pan-y}
 #world{position:relative;width:100%;height:auto;transform-origin:top center;transition:transform .15s}
 #world img{display:block;width:100%;height:auto;user-select:none;pointer-events:none}
-.pin{position:absolute;transform:translate(-50%,-50%);border:2px solid white;background:#102f45e8;color:white;border-radius:50%;width:34px;height:34px;font-weight:700;box-shadow:0 2px 8px #001b2c;cursor:pointer}
+.pin{position:absolute;z-index:10;transform:translate(-50%,-50%);border:2px solid white;background:#102f45e8;color:white;border-radius:50%;width:34px;height:34px;font-weight:700;box-shadow:0 2px 8px #001b2c;cursor:pointer}
 .pin.island{border-radius:9px;background:#218b45;width:28px;height:28px;border-color:#e8ffbd}
 .pin.active{outline:4px solid #ffd34e;outline-offset:3px;background:#a45c13}
 .fleet-token{position:absolute;left:50%;top:76%;transform:translate(-50%,-50%);z-index:6;font-size:28px;line-height:1;filter:drop-shadow(0 2px 3px #002033);transition:left 1.8s ease-in-out,top 1.8s ease-in-out;pointer-events:none}
