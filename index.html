@@ -597,24 +597,6 @@ document.querySelectorAll("#islands .island").forEach(plot => {
   
 localStorage.removeItem("savedPlotScreenshots");
 
-// Clear selected plot screenshot
-document.getElementById("clearLayout")
-.addEventListener("click", function() {
-
-  if (!selectedLayoutPlotId) return;
-
-  delete plotLayouts[selectedLayoutPlotId];
-
-  localStorage.setItem(
-    "plotLayouts",
-    JSON.stringify(plotLayouts)
-  );
-
-  document.getElementById("layoutPreview").style.display = "none";
-
-  document.getElementById("layoutStatus").textContent =
-    "Screenshot cleared for Plot " + selectedLayoutPlotId;
-});
 
 // =================================
 // CALL NEXT FLEET
