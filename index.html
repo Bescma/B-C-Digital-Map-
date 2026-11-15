@@ -417,6 +417,8 @@ svg {
 <div id="plotSimulator" style="display:none; padding:15px; background:#102b3d; color:white; border-radius:12px;">
   <h2 id="simulatorTitle">Plot Simulator</h2>
   <p>Missile and Interceptor Layout</p>
+  <button id="placeMissile">🚀 Missile</button>
+<button id="placeInterceptor">🛡️ Interceptor</button>
 
   <div id="layoutGrid" style="
     display:grid;
@@ -960,6 +962,30 @@ document.querySelectorAll("#islands .island").forEach(plot => {
 
 document.getElementById("closeSimulator").addEventListener("click", () => {
   simulator.style.display = "none";
+});
+
+let selectedLayoutItem = "";
+
+document.getElementById("placeMissile").addEventListener("click", () => {
+  selectedLayoutItem = "🚀";
+  simulatorStatus.textContent = "Missile selected. Tap a grid square.";
+});
+
+document.getElementById("placeInterceptor").addEventListener("click", () => {
+  selectedLayoutItem = "🛡️";
+  simulatorStatus.textContent = "Interceptor selected. Tap a grid square.";
+});
+
+layoutGrid.addEventListener("click", (event) => {
+  if (!selectedLayoutItem) return;
+
+  if (event.target.parentElement !== layoutGrid) return;
+
+  event.target.textContent = selectedLayoutItem;
+  event.target.style.display = "flex";
+  event.target.style.alignItems = "center";
+  event.target.style.justifyContent = "center";
+  event.target.style.fontSize = "18px";
 });
 
 </script>
