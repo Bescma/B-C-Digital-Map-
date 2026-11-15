@@ -1,1 +1,614 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B-C Digital Map</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #071725;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  padding: 15px;
+  background: #102b40;
+  border-bottom: 1px solid #24516b;
+}
+
+header h2 {
+  margin: 0;
+  font-size: 21px;
+}
+
+header p {
+  margin: 5px 0 0;
+  color: #9cb8c9;
+  font-size: 12px;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px;
+  background: #0b2031;
+}
+
+button {
+  border: 1px solid #34718e;
+  background: #16435c;
+  color: white;
+  padding: 11px 15px;
+  border-radius: 7px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:active {
+  background: #267ba0;
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.status {
+  padding: 10px 14px;
+  background: #102b40;
+  color: #8fd9ff;
+  font-size: 13px;
+}
+
+.map-container {
+  width: 100%;
+  overflow: hidden;
+  background: #073b59;
+  touch-action: pan-y;
+}
+
+svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 300px;
+  user-select: none;
+}
+
+.water {
+  fill: #073b59;
+}
+
+.island {
+  fill: #3b866b;
+  stroke: #a2c9a3;
+  stroke-width: 2;
+  cursor: pointer;
+}
+
+.island:active,
+.rig:active {
+  opacity: 0.7;
+}
+
+.rig {
+  cursor: pointer;
+}
+
+.rig rect {
+  fill: #aebdc7;
+  stroke: #263f50;
+  stroke-width: 2;
+}
+
+.rig line {
+  stroke: #e4eaf0;
+  stroke-width: 4;
+}
+
+.ship {
+  cursor: pointer;
+  transition: transform 3s ease-in-out;
+}
+
+.ship.selected {
+  filter: drop-shadow(0 0 7px #fff);
+}
+
+.ship polygon {
+  fill: #e5e9ed;
+  stroke: #142b3d;
+  stroke-width: 2;
+}
+
+.ship rect {
+  fill: #263d50;
+}
+
+.map-label {
+  fill: white;
+  font-size: 15px;
+  font-weight: bold;
+  pointer-events: none;
+}
+
+.small-label {
+  fill: #c5e9f8;
+  font-size: 12px;
+  pointer-events: none;
+}
+
+.destination {
+  fill: #ffe36b;
+  stroke: #fff;
+  stroke-width: 2;
+}
+
+.panel {
+  margin: 12px;
+  padding: 14px;
+  background: #102b40;
+  border: 1px solid #24516b;
+  border-radius: 9px;
+}
+
+.panel h3 {
+  margin: 0 0 8px;
+}
+
+.panel p {
+  color: #b6cfde;
+  font-size: 13px;
+  margin: 5px 0;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 12px;
+  font-size: 12px;
+  color: #c5dce8;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h2>B-C DIGITAL MAP</h2>
+  <p>Interactive Fleet Management System</p>
+</header>
+
+<div class="controls">
+  <button id="callNextShip">Call Next Fleet</button>
+  <button id="sendFleet" disabled>Send Fleet</button>
+  <button id="resetMap">Reset Map</button>
+</div>
+
+<div class="status" id="fleetStatus">
+  System ready. Call a fleet to begin.
+</div>
+
+<div class="map-container">
+
+<svg id="world" viewBox="0 0 1000 650"
+     xmlns="http://www.w3.org/2000/svg">
+
+  <rect class="water" width="1000" height="650"/>
+
+  <!-- Ocean grid -->
+  <g stroke="#16516c" stroke-width="1" opacity=".45">
+    <path d="M0 100 H1000 M0 200 H1000 M0 300 H1000 M0 400 H1000 M0 500 H1000 M0 600 H1000"/>
+    <path d="M100 0 V650 M200 0 V650 M300 0 V650 M400 0 V650 M500 0 V650 M600 0 V650 M700 0 V650 M800 0 V650 M900 0 V650"/>
+  </g>
+
+  <!-- Islands -->
+  <g id="islands">
+
+    <path class="island"
+      data-name="Northern Island"
+      d="M150 100 L190 75 L230 90 L255 130 L225 165 L180 160 L140 135 Z"/>
+
+    <path class="island"
+      data-name="Eastern Island"
+      d="M700 130 L750 100 L800 120 L825 160 L790 200 L735 190 L690 160 Z"/>
+
+    <path class="island"
+      data-name="Southern Island"
+      d="M400 440 L450 415 L500 440 L510 490 L475 520 L420 510 L390 475 Z"/>
+
+    <path class="island"
+      data-name="Western Island"
+      d="M90 350 L130 320 L175 340 L190 385 L155 420 L105 410 L80 380 Z"/>
+
+  </g>
+
+  <g class="map-label">
+    <text x="165" y="60">NORTHERN ISLAND</text>
+    <text x="710" y="85">EASTERN ISLAND</text>
+    <text x="395" y="555">SOUTHERN ISLAND</text>
+    <text x="65" y="305">WESTERN ISLAND</text>
+  </g>
+
+  <!-- Oil rigs -->
+  <g id="rigs">
+
+    <g class="rig" data-name="Oil Rig Alpha"
+       transform="translate(350 200)">
+      <rect x="-15" y="-15" width="30" height="25"/>
+      <line x1="-10" y1="10" x2="-10" y2="35"/>
+      <line x1="10" y1="10" x2="10" y2="35"/>
+      <line x1="-18" y1="-15" x2="0" y2="-35"/>
+      <line x1="18" y1="-15" x2="0" y2="-35"/>
+      <text class="small-label" x="20" y="5">RIG ALPHA</text>
+    </g>
+
+    <g class="rig" data-name="Oil Rig Bravo"
+       transform="translate(800 350)">
+      <rect x="-15" y="-15" width="30" height="25"/>
+      <line x1="-10" y1="10" x2="-10" y2="35"/>
+      <line x1="10" y1="10" x2="10" y2="35"/>
+      <line x1="-18" y1="-15" x2="0" y2="-35"/>
+      <line x1="18" y1="-15" x2="0" y2="-35"/>
+      <text class="small-label" x="20" y="5">RIG BRAVO</text>
+    </g>
+
+  </g>
+
+  <!-- Fleet ships are generated by JavaScript -->
+  <g id="shipLayer"></g>
+
+  <!-- Destination marker -->
+  <g id="destinationLayer"></g>
+
+  <!-- Map interaction layer -->
+  <rect id="mapInteraction"
+        width="1000" height="650"
+        fill="transparent"
+        style="pointer-events:all;cursor:crosshair"/>
+
+  <!-- Interactive objects are above the interaction layer -->
+  <g id="interactiveObjects"></g>
+
+</svg>
+</div>
+
+<div class="legend">
+  <span>🟢 Islands</span>
+  <span>🏗️ Oil Rigs</span>
+  <span>🚢 Fleet Ships</span>
+  <span>🟡 Destination</span>
+</div>
+
+<div class="panel">
+  <h3 id="objectTitle">Object Information</h3>
+  <p id="objectInfo">Select an island, oil rig or ship.</p>
+  <p id="fleetCount">Active fleets: 0</p>
+</div>
+
+<script>
+
+// =================================
+// GAME DATA
+// =================================
+
+let ships = [];
+let selectedShip = null;
+let destination = null;
+let shipCounter = 0;
+
+const shipLayer = document.getElementById("shipLayer");
+const destinationLayer =
+  document.getElementById("destinationLayer");
+
+const statusText =
+  document.getElementById("fleetStatus");
+
+const sendButton =
+  document.getElementById("sendFleet");
+
+const map = document.getElementById("world");
+
+
+// =================================
+// MAP INFORMATION
+// =================================
+
+function showInfo(title, description) {
+  document.getElementById("objectTitle").textContent = title;
+  document.getElementById("objectInfo").textContent = description;
+}
+
+function updateCount() {
+  document.getElementById("fleetCount").textContent =
+    "Active fleets: " + ships.length;
+}
+
+
+// =================================
+// CREATE SHIP
+// =================================
+
+function createShip(x, y) {
+
+  shipCounter++;
+
+  const id = shipCounter;
+
+  const ship = {
+    id: id,
+    x: x,
+    y: y,
+    element: null
+  };
+
+  const group = document.createElementNS(
+    "http://www.w3.org/2000/svg", "g"
+  );
+
+  group.setAttribute("class", "ship");
+  group.setAttribute("transform",
+    `translate(${x} ${y})`);
+
+  group.innerHTML = `
+    <polygon points="0,-13 24,0 0,13 6,0"/>
+    <rect x="-9" y="-5" width="12" height="10"
+          rx="2"/>
+    <text x="-8" y="27"
+          fill="white"
+          font-size="11">F${id}</text>
+  `;
+
+  group.addEventListener("click", function(event) {
+    event.stopPropagation();
+    selectShip(ship);
+  });
+
+  ship.element = group;
+
+  shipLayer.appendChild(group);
+  ships.push(ship);
+
+  updateCount();
+
+  return ship;
+}
+
+
+// =================================
+// SELECT SHIP
+// =================================
+
+function selectShip(ship) {
+
+  selectedShip = ship;
+
+  ships.forEach(s => {
+    s.element.classList.remove("selected");
+  });
+
+  ship.element.classList.add("selected");
+
+  sendButton.disabled = !destination;
+
+  showInfo(
+    "Fleet " + ship.id,
+    "Selected fleet. Choose a destination on the ocean."
+  );
+
+  statusText.textContent =
+    "Fleet " + ship.id + " selected.";
+}
+
+
+// =================================
+// CALL NEXT FLEET
+// =================================
+
+document.getElementById("callNextShip")
+.addEventListener("click", function() {
+
+  const ship = createShip(90, 570);
+
+  selectShip(ship);
+
+  destination = null;
+  destinationLayer.innerHTML = "";
+
+  sendButton.disabled = true;
+
+  statusText.textContent =
+    "Fleet " + ship.id +
+    " arrived. Select a destination on the map.";
+
+});
+
+
+// =================================
+// SELECT DESTINATION
+// =================================
+
+map.addEventListener("click", function(event) {
+
+  if (
+    event.target.closest(".island") ||
+    event.target.closest(".rig") ||
+    event.target.closest(".ship")
+  ) {
+    return;
+  }
+
+  const point = map.createSVGPoint();
+
+  point.x = event.clientX;
+  point.y = event.clientY;
+
+  const position = point.matrixTransform(
+    map.getScreenCTM().inverse()
+  );
+
+  if (position.x < 0 || position.x > 1000 ||
+      position.y < 0 || position.y > 650) {
+    return;
+  }
+
+  destination = {
+    x: position.x,
+    y: position.y
+  };
+
+  destinationLayer.innerHTML = `
+    <circle class="destination"
+      cx="${destination.x}"
+      cy="${destination.y}"
+      r="9"/>
+  `;
+
+  if (selectedShip) {
+    sendButton.disabled = false;
+    statusText.textContent =
+      "Destination selected. Press SEND FLEET.";
+  } else {
+    statusText.textContent =
+      "Destination marked. Select or call a fleet.";
+  }
+
+});
+
+
+// =================================
+// SEND SELECTED FLEET
+// =================================
+
+sendButton.addEventListener("click", function() {
+
+  if (!selectedShip || !destination) {
+    statusText.textContent =
+      "Select a fleet and destination first.";
+    return;
+  }
+
+  const ship = selectedShip;
+
+  const targetX = destination.x;
+  const targetY = destination.y;
+
+  ship.x = targetX;
+  ship.y = targetY;
+
+  ship.element.setAttribute(
+    "transform",
+    `translate(${targetX} ${targetY})`
+  );
+
+  statusText.textContent =
+    "Fleet " + ship.id + " is moving to its destination.";
+
+  showInfo(
+    "Fleet " + ship.id,
+    "Fleet is travelling to its selected destination."
+  );
+
+  destination = null;
+  selectedShip = null;
+
+  ships.forEach(s => {
+    s.element.classList.remove("selected");
+  });
+
+  destinationLayer.innerHTML = "";
+  sendButton.disabled = true;
+
+});
+
+
+// =================================
+// ISLAND INTERACTIONS
+// =================================
+
+document.querySelectorAll(".island").forEach(island => {
+
+  island.addEventListener("click", function(event) {
+
+    event.stopPropagation();
+
+    showInfo(
+      island.dataset.name,
+      "Island location selected."
+    );
+
+    statusText.textContent =
+      island.dataset.name + " selected.";
+
+  });
+
+});
+
+
+// =================================
+// OIL RIG INTERACTIONS
+// =================================
+
+document.querySelectorAll(".rig").forEach(rig => {
+
+  rig.addEventListener("click", function(event) {
+
+    event.stopPropagation();
+
+    showInfo(
+      rig.dataset.name,
+      "Oil rig location selected."
+    );
+
+    statusText.textContent =
+      rig.dataset.name + " selected.";
+
+  });
+
+});
+
+
+// =================================
+// RESET MAP
+// =================================
+
+document.getElementById("resetMap")
+.addEventListener("click", function() {
+
+  ships = [];
+  selectedShip = null;
+  destination = null;
+  shipCounter = 0;
+
+  shipLayer.innerHTML = "";
+  destinationLayer.innerHTML = "";
+
+  sendButton.disabled = true;
+
+  updateCount();
+
+  showInfo(
+    "Object Information",
+    "Map has been reset."
+  );
+
+  statusText.textContent =
+    "System reset. Ready for a new fleet.";
+
+});
+
+</script>
+
+</body>
+</html>
+
