@@ -591,7 +591,7 @@ let selectedSpawnPlot = null;
 
 // SELECT SHIP SPAWN PLOT
 
-document.querySelectorAll("#islands .island").forEach(plot => {
+document.querySelectorAll("#islands .island[data-plot-id]").forEach(plot => {
 
   plot.addEventListener("click", function(event) {
 
