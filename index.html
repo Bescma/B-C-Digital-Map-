@@ -231,6 +231,35 @@ svg {
  
 </div>
 
+
+<div class="layout-panel">
+  <h2>Plot Layout Analyzer</h2>
+
+  <p id="layoutStatus">
+    Select a plot to manage its screenshot.
+  </p>
+
+  <input
+    type="file"
+    id="layoutImage"
+    accept="image/*"
+  />
+
+  <button id="analyzeLayout">
+    Upload Screenshot
+  </button>
+
+  <button id="clearLayout">
+    Clear Screenshot
+  </button>
+
+  <img
+    id="layoutPreview"
+    style="display:none;width:100%;margin-top:15px;border-radius:10px;"
+    alt="Selected plot screenshot"
+  />
+</div>
+
 <div class="status" id="fleetStatus">
   System ready. Call a fleet to begin.
 </div>
@@ -557,6 +586,102 @@ document.querySelectorAll("#islands .island").forEach(plot => {
 
 });
   
+let selectedLayoutPlotId = null;
+
+const plotLayouts = JSON.parse(
+  localStorage.getItem("plotLayouts") || "{}"
+);
+
+// Select a plot for screenshot management
+document.querySelectorAll(
+  "#islands .island"
+).forEach(plot => {
+
+  plot.addEventListener("click", function() {
+    selectedLayoutPlotId = this.dataset.plotId;
+
+    document.getElementById("layoutStatus").textContent =
+      "Selected Plot " + selectedLayoutPlotId;
+
+    const preview = document.getElementById("layoutPreview");
+
+    if (plotLayouts[selectedLayoutPlotId]) {
+      preview.src = plotLayouts[selectedLayoutPlotId];
+      preview.style.display = "block";
+    } else {
+      preview.style.display = "none";
+    }
+  });
+
+});
+
+// Open screenshot picker
+document.getElementById("analyzeLayout")
+.addEventListener("click", function() {
+  if (!selectedLayoutPlotId) {
+    document.getElementById("layoutStatus").textContent =
+      "Select a plot first.";
+    return;
+  }
+
+  document.getElementById("layoutImage").click();
+});
+
+// Save screenshot to selected plot
+document.getElementById("layoutImage")
+.addEventListener("change", function() {
+
+  const file = this.files[0];
+  if (!file || !selectedLayoutPlotId) return;
+
+  if (!file.type.startsWith("image/")) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function() {
+    plotLayouts[selectedLayoutPlotId] = reader.result;
+
+    try {
+      localStorage.setItem(
+        "plotLayouts",
+        JSON.stringify(plotLayouts)
+      );
+
+      const preview = document.getElementById("layoutPreview");
+      preview.src = reader.result;
+      preview.style.display = "block";
+
+      document.getElementById("layoutStatus").textContent =
+        "Screenshot saved for Plot " + selectedLayoutPlotId;
+
+    } catch (error) {
+      document.getElementById("layoutStatus").textContent =
+        "Image too large. Try a smaller screenshot.";
+    }
+  };
+
+  reader.readAsDataURL(file);
+});
+
+// Clear selected plot screenshot
+document.getElementById("clearLayout")
+.addEventListener("click", function() {
+
+  if (!selectedLayoutPlotId) return;
+
+  delete plotLayouts[selectedLayoutPlotId];
+
+  localStorage.setItem(
+    "plotLayouts",
+    JSON.stringify(plotLayouts)
+  );
+
+  document.getElementById("layoutPreview").style.display = "none";
+
+  document.getElementById("layoutStatus").textContent =
+    "Screenshot cleared for Plot " + selectedLayoutPlotId;
+});
+
 // =================================
 // CALL NEXT FLEET
 // =================================
