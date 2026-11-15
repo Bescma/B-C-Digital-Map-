@@ -607,43 +607,7 @@ sendButton.addEventListener("click", function() {
 // PLOT INTERACTIONS AND RENAMING
 // =================================
 
-document.querySelectorAll("#islands .island")
-.forEach(island => {
 
-  island.addEventListener("click", function(event) {
-
-    event.stopPropagation();
-
-    const oldName = island.dataset.name;
-
-    const newName = prompt(
-      "Enter a new name for " + oldName + ":",
-      oldName
-    );
-
-    if (newName === null) return;
-
-    if (newName.trim() !== "") {
-    island.dataset.name = newName.trim();
-
-const label = island.nextElementSibling;
-
-if (label && label.classList.contains("plot-label")) {
-  label.textContent = island.dataset.name;
-}
-    }
-
-    showInfo(
-      island.dataset.name,
-      "Plot selected. You can rename this plot anytime."
-    );
-
-    statusText.textContent =
-      island.dataset.name + " selected.";
-
-  });
-
-});
  
 // =================================
 // OIL RIG INTERACTIONS
