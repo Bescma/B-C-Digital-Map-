@@ -204,6 +204,26 @@ svg {
   <button id="callNextShip">Call Next Fleet</button>
   <button id="sendFleet" disabled>Send Fleet</button>
   <button id="resetMap">Reset Map</button>
+
+<div class="rename-panel">
+  <h3>Rename Plot</h3>
+
+  <select id="plotChoice">
+    <option value="1">Plot 1</option>
+    <option value="2">Plot 2</option>
+    <option value="3">Plot 3</option>
+    <option value="4">Plot 4</option>
+    <option value="5">Plot 5</option>
+    <option value="6">Plot 6</option>
+    <option value="7">Plot 7</option>
+    <option value="8">Plot 8</option>
+  </select>
+
+  <input id="newPlotName" type="text"
+    placeholder="Enter new plot name">
+
+  <button id="renamePlotButton">Rename Plot</button>
+ 
 </div>
 
 <div class="status" id="fleetStatus">
@@ -675,6 +695,38 @@ document.getElementById("resetMap")
   statusText.textContent =
     "System reset. Ready for a new fleet.";
 
+});
+
+document.getElementById("renamePlotButton")
+.addEventListener("click", function() {
+  const number = document.getElementById("plotChoice").value;
+  const newName = document.getElementById("newPlotName").value.trim();
+
+  if (!newName) {
+    alert("Please enter a new plot name.");
+    return;
+  }
+
+  const plot = document.querySelector(
+    `#islands .island[data-name="Plot ${number}"]`
+  );
+
+  if (!plot) {
+    alert("Plot not found. Check the plot's original name.");
+    return;
+  }
+
+  plot.dataset.name = newName;
+
+  const label = plot.nextElementSibling;
+
+  if (label && label.classList.contains("plot-label")) {
+    label.textContent = newName;
+  }
+
+  document.getElementById("newPlotName").value = "";
+
+  alert("Plot renamed successfully!");
 });
 
 </script>
