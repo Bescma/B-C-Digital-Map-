@@ -442,7 +442,11 @@ svg {
 </div>
 
 <script>
+let activeSimulatorPlotId = null;
 
+const savedPlotScreenshots = JSON.parse(
+  localStorage.getItem("savedPlotScreenshots") || "{}"
+);
 // =================================
 // GAME DATA
 // =================================
@@ -945,7 +949,17 @@ document.querySelectorAll("#islands .island").forEach(plot => {
     event.stopPropagation();
 
     const plotId = this.dataset.plotId || "Unknown";
+activeSimulatorPlotId = plotId;
 
+const preview = document.getElementById("opponentPreview");
+
+if (savedPlotScreenshots[plotId]) {
+  preview.src = savedPlotScreenshots[plotId];
+  preview.style.display = "block";
+} else {
+  preview.removeAttribute("src");
+  preview.style.display = "none";
+}
     simulatorTitle.textContent = "Plot " + plotId + " Simulator";
     simulatorStatus.textContent =
       "Missile and Interceptor layout for Plot " + plotId;
