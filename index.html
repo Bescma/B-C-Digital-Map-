@@ -977,14 +977,27 @@ let cameraTilt = 0.75;
 let cameraDistance = 1250;
 
 function create3DMap() {
-  if (scene3D) return;
+  if (scene3D && renderer3D) return;
 
   if (typeof THREE === "undefined") {
-    alert("3D library failed to load. Please refresh the page.");
+    alert("3D library failed to load.");
     return;
   }
 
   const container = document.getElementById("threeDMap");
+
+  if (!container) {
+    alert("3D map container is missing.");
+    return;
+  }
+
+  if (container.clientWidth === 0 || container.clientHeight === 0) {
+    alert("3D map container has no visible size.");
+    return;
+  }
+
+  scene3D = null;
+  renderer3D = null;
 console.log("3D container:", container);
 console.log("Container width:", container.clientWidth);
 console.log("Container height:", container.clientHeight);
