@@ -430,8 +430,8 @@ function updateCount() {
 // CREATE SHIP
 // =================================
 
-function createShip(x, y) {
-
+function createShip(x, y, plotId = null) { 
+  
   shipCounter++;
 
   const id = shipCounter;
@@ -462,7 +462,7 @@ function createShip(x, y) {
   8: "#36e5e5"
 };
 
-const shipColor = plotColors[
+const shipColor = plotColors[plotId] || "#65eaff";
   selectedSpawnPlot ? selectedSpawnPlot.id : 0
 ] || "#65eaff";
   
@@ -574,9 +574,10 @@ document.getElementById("callNextShip")
   }
 
   const ship = createShip(
-    selectedSpawnPlot.x,
-    selectedSpawnPlot.y
-  );
+  selectedSpawnPlot.x,
+  selectedSpawnPlot.y,
+  selectedSpawnPlot.id
+);
 
   selectShip(ship);
 
