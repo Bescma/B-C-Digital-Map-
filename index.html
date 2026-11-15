@@ -512,9 +512,9 @@ function selectShip(ship) {
 }
   
 let selectedSpawnPlot = null;
-  
+
 // SELECT SHIP SPAWN PLOT
-  
+
 document.querySelectorAll("#islands .island").forEach(plot => {
 
   plot.addEventListener("click", function(event) {
@@ -542,6 +542,8 @@ document.querySelectorAll("#islands .island").forEach(plot => {
       " selected as ship spawn point.";
 
   });
+
+});
   
 // =================================
 // CALL NEXT FLEET
