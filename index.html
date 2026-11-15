@@ -957,6 +957,9 @@ document.getElementById("mapViewToggle").addEventListener("click", function() {
     this.textContent = "Switch to 3D";
   }
 });
+  let islandMeshes3D = [];
+let islandCounter3D = 0;
+let selectedIsland3D = null;
   let scene3D = null;
 let camera3D = null;
 let renderer3D = null;
@@ -1014,15 +1017,26 @@ function updateCameraPosition() {
 }
 
 updateCameraPosition();
+const raycaster3D = new THREE.Raycaster();
+const pointer3D = new THREE.Vector2();
 
+let cameraStartX = 0;
+let cameraStartY = 0;
+let cameraMoved = false;
 const canvas = renderer3D.domElement;
 canvas.style.touchAction = "none";
 
 // Rotate with mouse or finger
 canvas.addEventListener("pointerdown", function(event) {
   cameraDragging = true;
+
+  cameraStartX = event.clientX;
+  cameraStartY = event.clientY;
+  cameraMoved = false;
+
   cameraLastX = event.clientX;
   cameraLastY = event.clientY;
+
   canvas.setPointerCapture(event.pointerId);
 });
 
@@ -1031,7 +1045,12 @@ canvas.addEventListener("pointermove", function(event) {
 
   const dx = event.clientX - cameraLastX;
 const dy = event.clientY - cameraLastY;
-
+if (
+  Math.abs(event.clientX - cameraStartX) > 8 ||
+  Math.abs(event.clientY - cameraStartY) > 8
+) {
+  cameraMoved = true;
+}
 if (event.buttons === 2 || event.shiftKey) {
   const panSpeed = cameraDistance * 0.0015;
 
@@ -1048,8 +1067,34 @@ if (event.buttons === 2 || event.shiftKey) {
   updateCameraPosition();
 });
 
-function stopCameraDrag() {
+function stopCameraDrag(event) {
   cameraDragging = false;
+
+  if (cameraMoved || !event) return;
+
+  const rect = canvas.getBoundingClientRect();
+
+  pointer3D.x =
+    ((event.clientX - rect.left) / rect.width) * 2 - 1;
+
+  pointer3D.y =
+    -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+  raycaster3D.setFromCamera(pointer3D, camera3D);
+
+  const hits = raycaster3D.intersectObjects(
+    islandMeshes3D,
+    false
+  );
+
+  if (hits.length > 0) {
+    selectedIsland3D = hits[0].object;
+
+    alert(
+      "Selected: " +
+      selectedIsland3D.userData.islandName
+    );
+  }
 }
 
 canvas.addEventListener("pointerup", stopCameraDrag);
@@ -1101,6 +1146,12 @@ for (let i = 0; i < oceanPositions.count; i++) {
 }
 
   function addIsland(x, z, width, depth, color) {
+  islandCounter3D++;
+
+  const islandName = islandCounter3D === 1
+    ? "Central Island"
+    : "Plot " + (islandCounter3D - 1);
+
   const island = new THREE.Mesh(
     new THREE.BoxGeometry(width, 22, depth),
     new THREE.MeshStandardMaterial({
@@ -1110,87 +1161,37 @@ for (let i = 0; i < oceanPositions.count; i++) {
   );
 
   island.position.set(x, 4, z);
-scene3D.add(island);
+  scene3D.add(island);
 
-// Green grass surface
-const grass = new THREE.Mesh(
-  new THREE.BoxGeometry(width - 8, 3, depth - 8),
-  new THREE.MeshStandardMaterial({
-    color: 0x659447,
-    roughness: 1
-  })
-);
+  const beach = new THREE.Mesh(
+    new THREE.BoxGeometry(width + 12, 8, depth + 12),
+    new THREE.MeshStandardMaterial({
+      color: 0xd8c18a,
+      roughness: 1
+    })
+  );
 
-grass.position.set(x, 16, z);
-scene3D.add(grass);
+  beach.position.set(x, -3, z);
+  scene3D.add(beach);
 
-// Sandy beach border
-const beach = new THREE.Mesh(
-  new THREE.BoxGeometry(width + 12, 8, depth + 12),
-  new THREE.MeshStandardMaterial({
-    color: 0xd8c18a,
-    roughness: 1
-  })
-);
+  const grass = new THREE.Mesh(
+    new THREE.BoxGeometry(width - 8, 3, depth - 8),
+    new THREE.MeshStandardMaterial({
+      color: 0x659447,
+      roughness: 1
+    })
+  );
 
-beach.position.set(x, -3, z);
-scene3D.add(beach);
+  grass.position.set(x, 16, z);
+  grass.userData.islandName = islandName;
+  grass.userData.islandX = x;
+  grass.userData.islandZ = z;
+  grass.userData.islandWidth = width;
+  grass.userData.islandDepth = depth;
+
+  scene3D.add(grass);
+  islandMeshes3D.push(grass);
   }
-
-  // Central island
-  addIsland(0, 0, 300, 230, 0x6b9b50);
-
-  // Eight surrounding plots
-  
-const plots = [
-  [-420, -350],
-  [0, -470],
-  [420, -350],
-  [480, 0],
-  [420, 350],
-  [0, 470],
-  [-420, 350],
-  [-480, 0]
-];
-  plots.forEach(([x, z]) => {
-    addIsland(x, z, 115, 95, 0x83a85a);
-  });
-
-  function addOilRig(x, z) {
-    const metal = new THREE.MeshStandardMaterial({
-      color: 0x596b78,
-      metalness: 0.7,
-      roughness: 0.35
-    });
-
-    const platform = new THREE.Mesh(
-      new THREE.BoxGeometry(65, 8, 55),
-      new THREE.MeshStandardMaterial({ color: 0x444f58 })
-    );
-    platform.position.set(x, 35, z);
-    scene3D.add(platform);
-
-    const legs = [
-      [-23, -18], [23, -18], [-23, 18], [23, 18]
-    ];
-
-    legs.forEach(([lx, lz]) => {
-      const leg = new THREE.Mesh(
-        new THREE.CylinderGeometry(3, 4, 65, 8),
-        metal
-      );
-      leg.position.set(x + lx, 2, z + lz);
-      scene3D.add(leg);
-    });
-
-    const tower = new THREE.Mesh(
-      new THREE.BoxGeometry(15, 38, 15),
-      metal
-    );
-    tower.position.set(x, 58, z);
-    scene3D.add(tower);
-  }
-
   addOilRig(-300, -220);
   addOilRig(300, -220);
   addOilRig(-300, 220);
