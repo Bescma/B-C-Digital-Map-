@@ -352,11 +352,15 @@ svg {
   <!-- Destination marker -->
   <g id="destinationLayer"></g>
 
-  <!-- Map interaction layer -->
-  style="pointer-events:none;cursor:crosshair"
-        width="1000" height="650"
-        fill="transparent"
-        style="pointer-events:all;cursor:crosshair"/>
+<!-- Map interaction layer -->
+<rect id="mapInteraction"
+  x="0"
+  y="0"
+  width="1000"
+  height="650"
+  fill="transparent"
+  style="pointer-events:none;cursor:crosshair"/>
+ 
 
   <!-- Interactive objects are above the interaction layer -->
   <g id="interactiveObjects"></g>
