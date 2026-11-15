@@ -233,10 +233,36 @@ svg {
 
 
 <div class="layout-panel">
-  
-  <button id="clearLayout">
-    Clear Screenshot
-  </button>
+  <button id="openTutorial">📖 How to Use</button>
+
+<div id="tutorialPanel" style="
+  display:none;
+  position:relative;
+  background:#102b3d;
+  color:white;
+  padding:18px;
+  margin:12px 0;
+  border:1px solid #28617a;
+  border-radius:12px;
+">
+
+  <h2>Digital Map Tutorial</h2>
+
+  <h3>1. Explore the Map</h3>
+  <p>Tap islands, plots, oil rigs and ships to interact with them.</p>
+
+  <h3>2. Plot Simulator</h3>
+  <p>Tap a plot to open its 2D simulator and view the 10×10 grid.</p>
+
+  <h3>3. Ships</h3>
+  <p>Select a destination, call a ship and select a fleet to move it.</p>
+
+  <h3>4. Oil Rigs</h3>
+  <p>Explore the offshore oil rigs on the map.</p>
+
+  <button id="closeTutorial">Close Tutorial</button>
+
+</div>
 
   <img
     id="layoutPreview"
