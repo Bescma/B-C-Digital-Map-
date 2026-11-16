@@ -1173,7 +1173,28 @@ const originalHeights = [];
 for (let i = 0; i < oceanPositions.count; i++) {
   originalHeights.push(oceanPositions.getZ(i));
 }
+function addOilRig(x, z) {
+  const platform = new THREE.Mesh(
+    new THREE.BoxGeometry(65, 8, 55),
+    new THREE.MeshStandardMaterial({
+      color: 0x555b60,
+      roughness: 0.8
+    })
+  );
 
+  platform.position.set(x, 20, z);
+  scene3D.add(platform);
+
+  const tower = new THREE.Mesh(
+    new THREE.BoxGeometry(12, 35, 12),
+    new THREE.MeshStandardMaterial({
+      color: 0xf0a52b
+    })
+  );
+
+  tower.position.set(x, 40, z);
+  scene3D.add(tower);
+  }
   function addIsland(x, z, width, depth, color) {
   islandCounter3D++;
 
