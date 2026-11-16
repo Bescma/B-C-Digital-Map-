@@ -1309,8 +1309,7 @@ oceanPositions.setZ(i, originalHeights[i] + wave);
   animate3D();
 } 
   document.getElementById("buildPortButton").addEventListener("click", function() {
-  alert("Ship Port button is working!");
-});
+
   if (!selectedIsland3D) {
     alert("Please select an island first.");
     return;
@@ -1364,6 +1363,8 @@ oceanPositions.setZ(i, originalHeights[i] + wave);
   alert("Ship port built on " +
     selectedIsland3D.userData.islandName);
 });
+
+</sricpt>
 
   
 </body>
