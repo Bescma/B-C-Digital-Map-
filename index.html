@@ -1055,10 +1055,19 @@ console.log("Container height:", container.clientHeight);
   camera3D.position.set(650, 550, 750);
   camera3D.lookAt(0, 0, 0);
 
-  renderer3D = new THREE.WebGLRenderer({ antialias: true });
-  renderer3D.setSize(container.clientWidth, container.clientHeight);
-  renderer3D.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  container.appendChild(renderer3D.domElement);
+  renderer3D = new THREE.WebGLRenderer({
+  antialias: true,
+  powerPreference: "high-performance"
+});
+
+renderer3D.setSize(container.clientWidth, container.clientHeight);
+renderer3D.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+renderer3D.shadowMap.enabled = true;
+renderer3D.shadowMap.type = THREE.PCFSoftShadowMap;
+
+renderer3D.toneMapping = THREE.ACESFilmicToneMapping;
+renderer3D.toneMappingExposure = 1.15;
   // Free camera controls
 const cameraTarget = new THREE.Vector3(0, 0, 0);
 
