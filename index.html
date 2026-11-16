@@ -1610,7 +1610,7 @@ if (resetCameraButton) {
   resetCameraButton.onclick = function() {
   alert("STEP 1: Started");
 
-  cameraTarget.set(0, 0, 0);
+  alert("Camera target exists: " + !!cameraTarget);
   alert("STEP 2: Camera target reset");
 
   cameraRotation = 0;
