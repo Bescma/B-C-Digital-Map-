@@ -1609,7 +1609,10 @@ const resetCameraButton = document.getElementById("resetCamera3D");
 if (resetCameraButton) {
   resetCameraButton.onclick = function() {
     
-    alert("Reset button clicked!");
+    alert(
+  "Camera: " + !!camera3D +
+  "\nRenderer: " + !!renderer3D
+);;
 
     if (!camera3D || !renderer3D) {
       alert("Please switch to 3D first.");
