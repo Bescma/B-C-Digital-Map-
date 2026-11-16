@@ -1064,18 +1064,20 @@ function updateCameraPosition() {
   cameraDistance = Math.max(250, Math.min(1600, cameraDistance));
   cameraTilt = Math.max(0.15, Math.min(1.45, cameraTilt));
 
+  const horizontalDistance =
+    cameraDistance * Math.cos(cameraTilt);
+
   camera3D.position.set(
-    cameraTarget.x + cameraDistance * Math.sin(cameraRotation) * Math.cos(cameraTilt),
+    cameraTarget.x + horizontalDistance * Math.sin(cameraRotation),
     cameraTarget.y + cameraDistance * Math.sin(cameraTilt),
-    cameraTarget.z + cameraDistance * Math.cos(cameraRotation) * Math.cos(cameraTilt)
+    cameraTarget.z + horizontalDistance * Math.cos(cameraRotation)
   );
 
+  camera3D.up.set(0, 1, 0);
   camera3D.lookAt(cameraTarget);
-}
+  }
 
-updateCameraPosition();
-  camera3D.lookAt(0, 0, 0);
-camera3D.updateProjectionMatrix();
+updateCameraPosition()
 
 renderer3D.render(scene3D, camera3D);
 const raycaster3D = new THREE.Raycaster();
@@ -1611,20 +1613,15 @@ if (resetCameraButton) {
     if (!camera3D) return;
 
     cameraTarget.set(0, 0, 0);
-    cameraRotation = 0.7;
-    cameraTilt = 0.75;
-    cameraDistance = 1250;
+cameraRotation = 0;
+cameraTilt = 1.35;
+cameraDistance = 1250;
 
-    updateCameraPosition();
-    camera3D.lookAt(0, 0, 0);
-camera3D.updateProjectionMatrix();
+updateCameraPosition();
 
-renderer3D.render(scene3D, camera3D);
+selectedIsland3D = null;
 
-    selectedIsland3D = null;
-
-    const menu = document.getElementById("islandBuildControls");
-    if (menu) menu.style.display = "none";
+document.getElementById("islandBuildControls").style.display = "none";
   };
 } else {
   
