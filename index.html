@@ -1248,6 +1248,7 @@ plots.forEach(([x, z]) => {
 const waveClock = new THREE.Clock();
 
 function animate3D() {
+  alert("Animation function started");
   animation3D = requestAnimationFrame(animate3D);
 
   const time = waveClock.getElapsedTime();
