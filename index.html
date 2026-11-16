@@ -1616,6 +1616,10 @@ if (resetCameraButton) {
 
     // Return camera to the map centre
     cameraTarget.set(0, 0, 0);
+    alert(
+  "Camera distance before reset: " + cameraDistance +
+  "\nCamera tilt before reset: " + cameraTilt
+);
 
     cameraRotation = 0;
     cameraTilt = 1.35;
