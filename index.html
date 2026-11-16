@@ -1314,10 +1314,54 @@ oceanPositions.setZ(i, originalHeights[i] + wave);
     return;
   }
 
-  alert("Ship Port construction is ready for " +
+  if (selectedIsland3D.userData.portBuilt) {
+    alert("This island already has a ship port.");
+    return;
+  }
+
+  const x = selectedIsland3D.userData.islandX;
+  const z = selectedIsland3D.userData.islandZ;
+  const depth = selectedIsland3D.userData.islandDepth;
+
+  const port = new THREE.Group();
+
+  const woodMaterial = new THREE.MeshStandardMaterial({
+    color: 0x79502d,
+    roughness: 0.9
+  });
+
+  // Main dock
+  const deck = new THREE.Mesh(
+    new THREE.BoxGeometry(42, 4, 28),
+    woodMaterial
+  );
+
+  deck.position.set(0, 20, 0);
+  port.add(deck);
+
+  // Dock support posts
+  for (const dx of [-17, 17]) {
+    for (const dz of [-10, 10]) {
+      const post = new THREE.Mesh(
+        new THREE.CylinderGeometry(2, 2, 22, 8),
+        woodMaterial
+      );
+
+      post.position.set(dx, 8, dz);
+      port.add(post);
+    }
+  }
+
+  // Place dock beside the island
+  port.position.set(x, 0, z + depth / 2 + 10);
+
+  scene3D.add(port);
+
+  selectedIsland3D.userData.portBuilt = true;
+
+  alert("Ship port built on " +
     selectedIsland3D.userData.islandName);
 });
-</script>
 
   
 </body>
