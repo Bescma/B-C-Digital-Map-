@@ -1630,6 +1630,13 @@ function buildPlotBuilding(buildingName, color, offsetX, offsetZ) {
     z + offsetZ
   );
 
+  building.traverse(function(object) {
+  if (object.isMesh) {
+    object.castShadow = true;
+    object.receiveShadow = true;
+  }
+});
+
   scene3D.add(building);
 
   selectedIsland3D.userData[buildingName] = true;
