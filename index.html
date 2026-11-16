@@ -1154,7 +1154,16 @@ function stopCameraDrag(event) {
   if (hits.length > 0) {
     selectedIsland3D = hits[0].object;
     
-document.getElementById("islandBuildControls").style.display = "block";
+const menu = document.getElementById("islandBuildControls");
+
+menu.style.display = "block";
+menu.style.visibility = "visible";
+menu.style.opacity = "1";
+menu.style.position = "relative";
+menu.style.zIndex = "99999";
+
+alert("Menu display: " + getComputedStyle(menu).display);
+    
 alert("Building menu activated!");
     
 cameraTarget.set(
