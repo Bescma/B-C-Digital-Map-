@@ -1615,6 +1615,12 @@ if (resetCameraButton) {
   cameraDistance = 1250;
 
   updateCameraPosition();
+    alert(
+  "Camera position: " +
+  camera3D.position.x.toFixed(0) + ", " +
+  camera3D.position.y.toFixed(0) + ", " +
+  camera3D.position.z.toFixed(0)
+);
 
   selectedIsland3D = null;
 
