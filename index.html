@@ -1151,6 +1151,8 @@ function stopCameraDrag(event) {
   if (hits.length > 0) {
     selectedIsland3D = hits[0].object;
     
+document.getElementById("islandBuildControls").style.display = "block";
+     
 cameraTarget.set(
   selectedIsland3D.userData.islandX,
   0,
