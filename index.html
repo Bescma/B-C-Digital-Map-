@@ -293,7 +293,9 @@ svg {
   border-radius:12px;
 ">
   <p id="selectedIslandName">No island selected</p>
-
+    
+<button id="renameIslandButton">✏️ Rename Island</button>
+    
   <h3>🏗️ Plot Buildings</h3>
 
   <button id="buildCommandCentre">🏢 Command Centre</button>
@@ -1362,6 +1364,10 @@ label.scale.set(100, 25, 1);
 
 scene3D.add(label);
 
+  label.userData.canvas = labelCanvas;
+label.userData.context = ctx;
+grass.userData.nameLabel = label;
+
   // Small natural-looking green terrain patches
   const patchMaterial = new THREE.MeshStandardMaterial({
     color: 0x789b52,
@@ -1725,6 +1731,48 @@ if (resetCameraButton) {
   alert("Bird's-Eye View reset completed!");
 };
 }
+
+
+  document.getElementById("renameIslandButton").addEventListener("click", function() {
+
+  if (!selectedIsland3D) {
+    alert("Please select an island first.");
+    return;
+  }
+
+  const newName = prompt(
+    "Enter a new island name:",
+    selectedIsland3D.userData.islandName
+  );
+
+  if (newName === null || newName.trim() === "") {
+    return;
+  }
+
+  const island = selectedIsland3D;
+  const label = island.userData.nameLabel;
+  const ctx = label.userData.context;
+  const texture = label.material.map;
+
+  island.userData.islandName = newName.trim();
+
+  ctx.clearRect(0, 0, 512, 128);
+  ctx.fillStyle = "rgba(10, 35, 50, 0.85)";
+  ctx.fillRect(0, 0, 512, 128);
+
+  ctx.font = "bold 52px Arial";
+  ctx.fillStyle = "#ffffff";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(newName.trim(), 256, 64);
+
+  texture.needsUpdate = true;
+
+  document.getElementById("selectedIslandName").textContent =
+    "Selected: " + newName.trim();
+
+  alert("Island renamed successfully!");
+});
   
 </script>
 
