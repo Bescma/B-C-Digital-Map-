@@ -1364,7 +1364,38 @@ oceanPositions.setZ(i, originalHeights[i] + wave);
   alert("Ship port built on " +
     selectedIsland3D.userData.islandName);
 });
+const fullscreen3DButton = document.getElementById("fullscreen3DButton");
+const map3DContainer = document.getElementById("threeDMap");
 
+fullscreen3DButton.addEventListener("click", async function() {
+  try {
+    if (!document.fullscreenElement) {
+      await map3DContainer.requestFullscreen();
+      fullscreen3DButton.textContent = "⛶ Exit Fullscreen";
+    } else {
+      await document.exitFullscreen();
+      fullscreen3DButton.textContent = "⛶ Fullscreen";
+    }
+  } catch (error) {
+    alert("Fullscreen is not supported on this device.");
+  }
+});
+
+document.addEventListener("fullscreenchange", function() {
+  if (renderer3D && camera3D && map3DContainer) {
+    const width = map3DContainer.clientWidth;
+    const height = map3DContainer.clientHeight;
+
+    renderer3D.setSize(width, height);
+    camera3D.aspect = width / height;
+    camera3D.updateProjectionMatrix();
+  }
+
+  fullscreen3DButton.textContent =
+    document.fullscreenElement === map3DContainer
+      ? "⛶ Exit Fullscreen"
+      : "⛶ Fullscreen";
+});
 </script>
 
   
