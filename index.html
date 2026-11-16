@@ -1203,11 +1203,22 @@ canvas.addEventListener("contextmenu", function(event) {
   event.preventDefault();
 });
 
-  const sunlight = new THREE.DirectionalLight(0xffffff, 2);
-  sunlight.position.set(400, 700, 300);
-  scene3D.add(sunlight);
+  const sunlight = new THREE.DirectionalLight(0xffffff, 3);
+sunlight.position.set(-400, 800, -300);
+sunlight.castShadow = true;
 
-  scene3D.add(new THREE.AmbientLight(0xffffff, 0.7));
+sunlight.shadow.mapSize.width = 2048;
+sunlight.shadow.mapSize.height = 2048;
+
+sunlight.shadow.camera.left = -1000;
+sunlight.shadow.camera.right = 1000;
+sunlight.shadow.camera.top = 1000;
+sunlight.shadow.camera.bottom = -1000;
+
+scene3D.add(sunlight);
+
+const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+scene3D.add(ambientLight);
 
   const oceanGeometry = new THREE.PlaneGeometry(
   2000, 1800, 100, 100
