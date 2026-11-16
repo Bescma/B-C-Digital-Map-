@@ -1233,10 +1233,13 @@ scene3D.add(ambientLight);
   2000, 1800, 100, 100
 );
 
-const oceanMaterial = new THREE.MeshStandardMaterial({
-  color: 0x087da5,
-  roughness: 0.3,
-  metalness: 0.25,
+const oceanMaterial = new THREE.MeshPhysicalMaterial({
+  color: 0x05658a,
+  roughness: 0.22,
+  metalness: 0.12,
+  clearcoat: 0.8,
+  clearcoatRoughness: 0.18,
+  reflectivity: 0.65,
   side: THREE.DoubleSide
 });
 
