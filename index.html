@@ -1601,15 +1601,12 @@ document.getElementById("buildStorage").addEventListener("click", function() {
 const resetCameraButton = document.getElementById("resetCamera3D");
 
 if (resetCameraButton) {
-  resetCameraButton.addEventListener("click", function() {
+  resetCameraButton.onclick = function() {
+    alert("Bird's-Eye View button is working!");
 
-    if (!camera3D || !scene3D) {
-      alert("Please open the 3D map first.");
-      return;
-    }
+    if (!camera3D) return;
 
     cameraTarget.set(0, 0, 0);
-
     cameraRotation = 0.7;
     cameraTilt = 0.75;
     cameraDistance = 1250;
@@ -1619,12 +1616,10 @@ if (resetCameraButton) {
     selectedIsland3D = null;
 
     const menu = document.getElementById("islandBuildControls");
-
-    if (menu) {
-      menu.style.display = "none";
-    }
-
-  });
+    if (menu) menu.style.display = "none";
+  };
+} else {
+  alert("Bird's-Eye View button was not found!");
 }
   
 </script>
