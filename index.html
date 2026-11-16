@@ -1608,44 +1608,21 @@ const resetCameraButton = document.getElementById("resetCamera3D");
 
 if (resetCameraButton) {
   resetCameraButton.onclick = function() {
-    
-    alert(
-  "Camera: " + !!camera3D +
-  "\nRenderer: " + !!renderer3D
-);;
+  cameraTarget.set(0, 0, 0);
 
-    if (!camera3D || !renderer3D) {
-      alert("Please switch to 3D first.");
-      return;
-    }
+  cameraRotation = 0;
+  cameraTilt = 1.35;
+  cameraDistance = 1250;
 
-    // Return camera to the map centre
-    cameraTarget.set(0, 0, 0);
-    alert(
-  "Camera distance before reset: " + cameraDistance +
-  "\nCamera tilt before reset: " + cameraTilt
-);
+  updateCameraPosition();
 
-    cameraRotation = 0;
-    cameraTilt = 1.35;
-    cameraDistance = 1250;
+  selectedIsland3D = null;
 
-    // Update camera
-    updateCameraPosition();
+  const menu = document.getElementById("islandBuildControls");
+  if (menu) menu.style.display = "none";
 
-    // Clear selected plot
-    selectedIsland3D = null;
-
-    const menu = document.getElementById("islandBuildControls");
-
-    if (menu) {
-      menu.style.display = "none";
-    }
-
-    // Render the updated view
-    camera3D.updateProjectionMatrix();
-    renderer3D.render(scene3D, camera3D);
-  };
+  renderer3D.render(scene3D, camera3D);
+};
 }
   
 </script>
