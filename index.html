@@ -950,6 +950,11 @@ document.getElementById("mapViewToggle").addEventListener("click", function() {
 console.log("Three.js:", typeof THREE);
 console.log("Renderer:", renderer3D);
 console.log("Scene:", scene3D);
+    alert(
+  "Renderer: " + !!renderer3D +
+  "\nScene: " + !!scene3D +
+  "\nCamera: " + !!camera3D
+);
     if (renderer3D && camera3D) {
   const width = map3D.clientWidth;
   const height = map3D.clientHeight;
