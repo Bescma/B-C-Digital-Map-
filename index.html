@@ -1385,6 +1385,7 @@ plots.forEach(([x, z]) => {
   addOilRig(300, 220);
 const waveClock = new THREE.Clock();
 
+
 function animate3D() {
   animation3D = requestAnimationFrame(animate3D);
 
@@ -1395,18 +1396,19 @@ function animate3D() {
     const y = oceanPositions.getY(i);
 
     const wave =
-  Math.sin(x * 0.035 + time * 2) * 4 +
-  Math.cos(y * 0.035 + time * 1.5) * 3;
+      Math.sin(x * 0.025 + time * 1.2) * 2.5 +
+      Math.cos(y * 0.025 + time * 0.9) * 2 +
+      Math.sin((x + y) * 0.015 + time * 0.7) * 1.5;
 
-oceanPositions.setZ(i, originalHeights[i] + wave);
+    oceanPositions.setZ(i, originalHeights[i] + wave);
   }
 
   oceanPositions.needsUpdate = true;
   oceanGeometry.computeVertexNormals();
 
   renderer3D.render(scene3D, camera3D);
-  console.log("3D frame rendered");
-} 
+}
+
   alert("Reached animation startup");
   animate3D();
 } 
