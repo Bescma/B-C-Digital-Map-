@@ -1598,24 +1598,34 @@ document.getElementById("buildStorage").addEventListener("click", function() {
   buildPlotBuilding("Storage Depot", 0xc18b49, 20, 20);
 });
 
-document.getElementById("resetCamera3D").addEventListener("click", function() {
+const resetCameraButton = document.getElementById("resetCamera3D");
 
-  // Reset camera target to the centre
-  cameraTarget.set(0, 0, 0);
+if (resetCameraButton) {
+  resetCameraButton.addEventListener("click", function() {
 
-  // Restore normal bird's-eye camera
-  cameraRotation = 0.7;
-  cameraTilt = 0.75;
-  cameraDistance = 1250;
+    if (!camera3D || !scene3D) {
+      alert("Please open the 3D map first.");
+      return;
+    }
 
-  updateCameraPosition();
+    cameraTarget.set(0, 0, 0);
 
-  // Clear selected plot
-  selectedIsland3D = null;
+    cameraRotation = 0.7;
+    cameraTilt = 0.75;
+    cameraDistance = 1250;
 
-  document.getElementById("islandBuildControls").style.display = "none";
+    updateCameraPosition();
 
-});
+    selectedIsland3D = null;
+
+    const menu = document.getElementById("islandBuildControls");
+
+    if (menu) {
+      menu.style.display = "none";
+    }
+
+  });
+}
   
 </script>
 
