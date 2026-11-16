@@ -1308,6 +1308,15 @@ oceanPositions.setZ(i, originalHeights[i] + wave);
   alert("Reached animation startup");
   animate3D();
 } 
+  document.getElementById("buildPortButton").addEventListener("click", function() {
+  if (!selectedIsland3D) {
+    alert("Please select an island first.");
+    return;
+  }
+
+  alert("Ship Port construction is ready for " +
+    selectedIsland3D.userData.islandName);
+});
 </script>
 
   
