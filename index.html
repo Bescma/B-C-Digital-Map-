@@ -290,7 +290,27 @@ svg {
   <p id="selectedIslandName">No island selected</p>
   <button id="buildPortButton">⚓ Build Ship Port</button>
   </div>
+  <div id="islandBuildControls" style="
+  display:none;
+  background:#102b3d;
+  color:white;
+  padding:12px;
+  margin:10px 0;
+  border-radius:10px;
+">
+  <p id="selectedIslandName">No island selected</p>
+
+  <h3>🏗️ Plot Buildings</h3>
+
+  <button id="buildCommandCentre">🏢 Command Centre</button>
+  <button id="buildBarracks">🏠 Barracks</button>
+  <button id="buildHangar">✈️ Hangar</button>
+  <button id="buildStorage">📦 Storage Depot</button>
+
+  <button id="buildPortButton">⚓ Build Ship Port</button>
+  </div>
 <div id="threeDMap" style="
+  
   display:none;
   width:100%;
   height:850px;
@@ -1130,6 +1150,16 @@ function stopCameraDrag(event) {
 
   if (hits.length > 0) {
     selectedIsland3D = hits[0].object;
+    
+cameraTarget.set(
+  selectedIsland3D.userData.islandX,
+  0,
+  selectedIsland3D.userData.islandZ
+);
+
+cameraDistance = 450;
+updateCameraPosition();
+    
     document.getElementById("islandBuildControls").style.display = "block";
 
 document.getElementById("selectedIslandName").textContent =
