@@ -1608,23 +1608,35 @@ const resetCameraButton = document.getElementById("resetCamera3D");
 
 if (resetCameraButton) {
   resetCameraButton.onclick = function() {
-    alert("Bird's-Eye View button is working!");
 
-    if (!camera3D) return;
+    if (!camera3D || !renderer3D) {
+      alert("Please switch to 3D first.");
+      return;
+    }
 
+    // Return camera to the map centre
     cameraTarget.set(0, 0, 0);
-cameraRotation = 0;
-cameraTilt = 1.35;
-cameraDistance = 1250;
 
-updateCameraPosition();
+    cameraRotation = 0;
+    cameraTilt = 1.35;
+    cameraDistance = 1250;
 
-selectedIsland3D = null;
+    // Update camera
+    updateCameraPosition();
 
-document.getElementById("islandBuildControls").style.display = "none";
+    // Clear selected plot
+    selectedIsland3D = null;
+
+    const menu = document.getElementById("islandBuildControls");
+
+    if (menu) {
+      menu.style.display = "none";
+    }
+
+    // Render the updated view
+    camera3D.updateProjectionMatrix();
+    renderer3D.render(scene3D, camera3D);
   };
-} else {
-  
 }
   
 </script>
