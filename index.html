@@ -1280,44 +1280,41 @@ function addOilRig(x, z) {
   tower.position.set(x, 40, z);
   scene3D.add(tower);
   }
-  function addIsland(x, z, width, depth, color) {
+
+function addIsland(x, z, width, depth, color) {
   islandCounter3D++;
 
   const islandName = islandCounter3D === 1
     ? "Central Island"
     : "Plot " + (islandCounter3D - 1);
 
-  const island = new THREE.Mesh(
-    new THREE.BoxGeometry(width, 22, depth),
-    new THREE.MeshStandardMaterial({
-      color: color,
-      roughness: 0.9
-    })
-  );
-
-  island.position.set(x, 4, z);
-  scene3D.add(island);
-
+  // Sandy lower terrain
   const beach = new THREE.Mesh(
-    new THREE.BoxGeometry(width + 12, 8, depth + 12),
+    new THREE.BoxGeometry(width + 18, 12, depth + 18),
     new THREE.MeshStandardMaterial({
-      color: 0xd8c18a,
+      color: 0xd9c18b,
       roughness: 1
     })
   );
 
-  beach.position.set(x, -3, z);
+  beach.position.set(x, 1, z);
+  beach.castShadow = true;
+  beach.receiveShadow = true;
   scene3D.add(beach);
 
+  // Main green island surface
   const grass = new THREE.Mesh(
-    new THREE.BoxGeometry(width - 8, 3, depth - 8),
+    new THREE.BoxGeometry(width - 8, 5, depth - 8),
     new THREE.MeshStandardMaterial({
-      color: 0x659447,
+      color: color,
       roughness: 1
     })
   );
 
-  grass.position.set(x, 16, z);
+  grass.position.set(x, 9.5, z);
+  grass.castShadow = true;
+  grass.receiveShadow = true;
+
   grass.userData.islandName = islandName;
   grass.userData.islandX = x;
   grass.userData.islandZ = z;
@@ -1326,7 +1323,34 @@ function addOilRig(x, z) {
 
   scene3D.add(grass);
   islandMeshes3D.push(grass);
+
+  // Small natural-looking green terrain patches
+  const patchMaterial = new THREE.MeshStandardMaterial({
+    color: 0x789b52,
+    roughness: 1
+  });
+
+  for (let i = 0; i < 6; i++) {
+    const patch = new THREE.Mesh(
+      new THREE.CylinderGeometry(
+        8 + Math.random() * 10,
+        10 + Math.random() * 10,
+        1.5,
+        12
+      ),
+      patchMaterial
+    );
+
+    patch.position.set(
+      x + (Math.random() - 0.5) * (width - 25),
+      12.5,
+      z + (Math.random() - 0.5) * (depth - 25)
+    );
+
+    scene3D.add(patch);
   }
+}
+
 
 // Central island
 addIsland(0, 0, 300, 230, 0x6b9b50);
