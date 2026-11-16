@@ -1068,6 +1068,9 @@ renderer3D.shadowMap.type = THREE.PCFSoftShadowMap;
 
 renderer3D.toneMapping = THREE.ACESFilmicToneMapping;
 renderer3D.toneMappingExposure = 1.15;
+  
+  container.appendChild(renderer3D.domElement);
+  
   // Free camera controls
 const cameraTarget = new THREE.Vector3(0, 0, 0);
 
