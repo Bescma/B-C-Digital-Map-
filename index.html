@@ -1332,6 +1332,35 @@ function addIsland(x, z, width, depth, color) {
 
   scene3D.add(grass);
   islandMeshes3D.push(grass);
+  
+  // Floating island name label
+const labelCanvas = document.createElement("canvas");
+labelCanvas.width = 512;
+labelCanvas.height = 128;
+
+const ctx = labelCanvas.getContext("2d");
+
+ctx.fillStyle = "rgba(10, 35, 50, 0.85)";
+ctx.fillRect(0, 0, 512, 128);
+
+ctx.font = "bold 52px Arial";
+ctx.fillStyle = "#ffffff";
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
+ctx.fillText(islandName, 256, 64);
+
+const labelTexture = new THREE.CanvasTexture(labelCanvas);
+
+const labelMaterial = new THREE.SpriteMaterial({
+  map: labelTexture,
+  transparent: true
+});
+
+const label = new THREE.Sprite(labelMaterial);
+label.position.set(x, 65, z);
+label.scale.set(100, 25, 1);
+
+scene3D.add(label);
 
   // Small natural-looking green terrain patches
   const patchMaterial = new THREE.MeshStandardMaterial({
