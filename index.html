@@ -1426,6 +1426,69 @@ document.addEventListener("fullscreenchange", function() {
       ? "⛶ Exit Fullscreen"
       : "⛶ Fullscreen";
 });
+
+  function buildPlotBuilding(buildingName, color, offsetX, offsetZ) {
+  if (!selectedIsland3D) {
+    alert("Please select a plot first.");
+    return;
+  }
+
+  if (selectedIsland3D.userData[buildingName]) {
+    alert("This building is already built.");
+    return;
+  }
+
+  const x = selectedIsland3D.userData.islandX;
+  const z = selectedIsland3D.userData.islandZ;
+
+  const building = new THREE.Group();
+
+  const structure = new THREE.Mesh(
+    new THREE.BoxGeometry(35, 25, 35),
+    new THREE.MeshStandardMaterial({
+      color: color,
+      roughness: 0.85
+    })
+  );
+
+  structure.position.y = 12.5;
+  building.add(structure);
+
+  const roof = new THREE.Mesh(
+    new THREE.BoxGeometry(40, 5, 40),
+    new THREE.MeshStandardMaterial({
+      color: 0x555b60
+    })
+  );
+
+  roof.position.y = 27;
+  building.add(roof);
+
+  building.position.set(x + offsetX, 17, z + offsetZ);
+
+  scene3D.add(building);
+
+  selectedIsland3D.userData[buildingName] = true;
+
+  alert(buildingName + " built successfully!");
+}
+
+document.getElementById("buildCommandCentre").addEventListener("click", function() {
+  buildPlotBuilding("Command Centre", 0x4d91bd, -20, -15);
+});
+
+document.getElementById("buildBarracks").addEventListener("click", function() {
+  buildPlotBuilding("Barracks", 0x789b68, 20, -15);
+});
+
+document.getElementById("buildHangar").addEventListener("click", function() {
+  buildPlotBuilding("Hangar", 0xb0a18a, -20, 20);
+});
+
+document.getElementById("buildStorage").addEventListener("click", function() {
+  buildPlotBuilding("Storage Depot", 0xc18b49, 20, 20);
+});
+  
 </script>
 
   
