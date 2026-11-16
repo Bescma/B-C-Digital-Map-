@@ -1608,25 +1608,12 @@ const resetCameraButton = document.getElementById("resetCamera3D");
 
 if (resetCameraButton) {
   resetCameraButton.onclick = function() {
-  alert("STEP 1: Started");
+    alert("STEP 1: Started");
 
-  alert("Camera target exists: " + !!cameraTarget);
-  alert("STEP 2: Camera target reset");
+    alert("Camera target type: " + typeof cameraTarget);
 
-  cameraRotation = 0;
-  cameraTilt = 1.35;
-  cameraDistance = 1250;
-
-  alert("STEP 3: Camera settings reset");
-
-  updateCameraPosition();
-  alert("STEP 4: Camera position updated");
-
-  selectedIsland3D = null;
-
-  renderer3D.render(scene3D, camera3D);
-  alert("STEP 5: Render complete");
-};
+    alert("STEP 2: Test complete");
+  };
 }
   
 </script>
