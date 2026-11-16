@@ -1616,6 +1616,10 @@ if (resetCameraButton) {
     cameraDistance = 1250;
 
     updateCameraPosition();
+    camera3D.lookAt(0, 0, 0);
+camera3D.updateProjectionMatrix();
+
+renderer3D.render(scene3D, camera3D);
 
     selectedIsland3D = null;
 
