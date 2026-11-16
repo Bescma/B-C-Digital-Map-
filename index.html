@@ -884,6 +884,31 @@ document.getElementById("renamePlotButton")
     label.textContent = newName;
   }
 
+  // Update matching 3D plot
+const island3D = islandMeshes3D[Number(number)];
+
+if (island3D) {
+  island3D.userData.islandName = newName;
+
+  const label3D = island3D.userData.nameLabel;
+
+  if (label3D) {
+    const ctx = label3D.userData.context;
+
+    ctx.clearRect(0, 0, 512, 128);
+    ctx.fillStyle = "rgba(10, 35, 50, 0.85)";
+    ctx.fillRect(0, 0, 512, 128);
+
+    ctx.font = "bold 52px Arial";
+    ctx.fillStyle = "#ffffff";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(newName, 256, 64);
+
+    label3D.material.map.needsUpdate = true;
+  }
+}
+
   document.getElementById("newPlotName").value = "";
 
   alert("Plot renamed successfully!");
