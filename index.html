@@ -1074,6 +1074,10 @@ function updateCameraPosition() {
 }
 
 updateCameraPosition();
+  camera3D.lookAt(0, 0, 0);
+camera3D.updateProjectionMatrix();
+
+renderer3D.render(scene3D, camera3D);
 const raycaster3D = new THREE.Raycaster();
 const pointer3D = new THREE.Vector2();
 
