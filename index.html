@@ -1014,6 +1014,8 @@ let cameraRotation = 0.7;
 let cameraTilt = 0.75;
 let cameraDistance = 1250;
 
+  const cameraTarget = new THREE.Vector3(0, 0, 0);
+
 function create3DMap() {
   if (scene3D && renderer3D) return;
 
