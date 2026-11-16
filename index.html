@@ -1232,9 +1232,7 @@ scene3D.add(sunlight);
 const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
 scene3D.add(ambientLight);
 
-  const oceanGeometry = new THREE.PlaneGeometry(
-  2000, 1800, 100, 100
-);
+  const oceanGeometry = new THREE.PlaneGeometry(2600, 1800, 100, 100);
 
 const oceanMaterial = new THREE.MeshPhysicalMaterial({
   color: 0x05658a,
@@ -1368,24 +1366,24 @@ addIsland(0, 0, 300, 230, 0x6b9b50);
 
 // Eight surrounding plots
 const plots = [
-  [-520, -430],
+  [-728, -430],
   [0, -580],
-  [520, -430],
-  [590, 0],
-  [520, 430],
+  [728, -430],
+  [826, 0],
+  [728, 430],
   [0, 580],
-  [-520, 430],
-  [-590, 0]
+  [-728, 430],
+  [-826, 0]
 ];
 
 plots.forEach(([x, z]) => {
   addIsland(x, z, 115, 95, 0x83a85a);
 });
   
-  addOilRig(-300, -220);
-  addOilRig(300, -220);
-  addOilRig(-300, 220);
-  addOilRig(300, 220);
+  addOilRig(-450, -220);
+addOilRig(450, -220);
+addOilRig(-450, 220);
+addOilRig(450, 220);
 const waveClock = new THREE.Clock();
 
 
