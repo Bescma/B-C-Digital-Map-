@@ -1610,13 +1610,26 @@ const resetCameraButton = document.getElementById("resetCamera3D");
 
 if (resetCameraButton) {
   resetCameraButton.onclick = function() {
-    alert("STEP 1: Started");
-    alert("Camera target: " + typeof cameraTarget);
+  cameraTarget.set(0, 0, 0);
 
-    alert("Camera target type: " + typeof cameraTarget);
+  cameraRotation = 0;
+  cameraTilt = 1.35;
+  cameraDistance = 1250;
 
-    alert("STEP 2: Test complete");
-  };
+  updateCameraPosition();
+
+  camera3D.lookAt(cameraTarget);
+  camera3D.updateProjectionMatrix();
+
+  renderer3D.render(scene3D, camera3D);
+
+  selectedIsland3D = null;
+
+  const menu = document.getElementById("islandBuildControls");
+  if (menu) menu.style.display = "none";
+
+  alert("Bird's-Eye View reset completed!");
+};
 }
   
 </script>
