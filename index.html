@@ -1248,7 +1248,6 @@ plots.forEach(([x, z]) => {
 const waveClock = new THREE.Clock();
 
 function animate3D() {
-  alert("Animation function started");
   animation3D = requestAnimationFrame(animate3D);
 
   const time = waveClock.getElapsedTime();
@@ -1270,6 +1269,7 @@ oceanPositions.setZ(i, originalHeights[i] + wave);
   renderer3D.render(scene3D, camera3D);
   console.log("3D frame rendered");
 } 
+  alert("Reached animation startup");
   animate3D();
 } 
 </script>
