@@ -1043,8 +1043,8 @@ console.log("Container width:", container.clientWidth);
 console.log("Container height:", container.clientHeight);
   scene3D = new THREE.Scene();
   scene3D.background = new THREE.Color(0x87ceeb);
-  scene3D.fog = new THREE.Fog(0x87ceeb, 700, 1800);
-
+  scene3D.fog = null;
+  
   camera3D = new THREE.PerspectiveCamera(
     50,
     container.clientWidth / container.clientHeight,
