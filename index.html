@@ -885,8 +885,8 @@ document.getElementById("renamePlotButton")
   }
 
   // Update matching 3D plot
-const island3D = islandMeshes3D[Number(number)];
-
+const island3D = islandMeshes3D[Number(number) + 1];
+  
 if (island3D) {
   island3D.userData.islandName = newName;
 
