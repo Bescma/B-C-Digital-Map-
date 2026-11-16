@@ -1268,6 +1268,10 @@ function addOilRig(x, z) {
   );
 
   platform.position.set(x, 20, z);
+
+  platform.castShadow = true;
+platform.receiveShadow = true; 
+  
   scene3D.add(platform);
 
   const tower = new THREE.Mesh(
@@ -1278,6 +1282,10 @@ function addOilRig(x, z) {
   );
 
   tower.position.set(x, 40, z);
+
+  tower.castShadow = true;
+tower.receiveShadow = true;
+  
   scene3D.add(tower);
   }
 
