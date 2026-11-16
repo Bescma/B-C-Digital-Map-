@@ -276,7 +276,10 @@ svg {
 </div>
   
 <button id="mapViewToggle">Switch to 3D</button>
+  
   <button id="fullscreen3DButton">⛶ Fullscreen</button>
+  
+  <button id="resetCamera3D">🌍 Bird's-Eye View</button>
 
   <div id="islandBuildControls" style="
   display:none;
@@ -1593,6 +1596,25 @@ document.getElementById("buildHangar").addEventListener("click", function() {
 
 document.getElementById("buildStorage").addEventListener("click", function() {
   buildPlotBuilding("Storage Depot", 0xc18b49, 20, 20);
+});
+
+document.getElementById("resetCamera3D").addEventListener("click", function() {
+
+  // Reset camera target to the centre
+  cameraTarget.set(0, 0, 0);
+
+  // Restore normal bird's-eye camera
+  cameraRotation = 0.7;
+  cameraTilt = 0.75;
+  cameraDistance = 1250;
+
+  updateCameraPosition();
+
+  // Clear selected plot
+  selectedIsland3D = null;
+
+  document.getElementById("islandBuildControls").style.display = "none";
+
 });
   
 </script>
